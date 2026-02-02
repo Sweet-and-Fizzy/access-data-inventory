@@ -1,0 +1,237 @@
+// ACCESS Data Inventory
+// Generated: 2026-02-02 17:09
+// Source: data-sources/*.md
+
+// =============================================================================
+// DATA SOURCES
+// =============================================================================
+
+Enum data_source {
+  access_support_drupal [note: '''
+    name: ACCESS Support Drupal
+    description: ACCESS Support website CMS - canonical storage for support content
+    category: Content Management
+    track: Support
+    responsible_team: Support
+    access_level: Varies
+    is_canonical: true
+    canonical_source: null
+    mcp_available: false
+    mcp_package: null
+    api_endpoint: https://support.access-ci.org
+    priority: High
+  ''']
+
+  affinity_groups [note: '''
+    name: Affinity Groups
+    description: Community groups organized by interest or domain
+    category: Community & Outreach
+    track: Support
+    responsible_team: Support
+    access_level: Public
+    is_canonical: false
+    canonical_source: access-support-drupal
+    mcp_available: true
+    mcp_package: @access-mcp/affinity-groups
+    api_endpoint: https://support.access-ci.org/api/1.1/affinity_groups
+    priority: High
+  ''']
+
+  announcements [note: '''
+    name: Announcements
+    description: Resource provider and community announcements
+    category: Community & Outreach
+    track: Support
+    responsible_team: Support
+    access_level: Public
+    is_canonical: false
+    canonical_source: access-support-drupal
+    mcp_available: true
+    mcp_package: @access-mcp/announcements
+    api_endpoint: https://support.access-ci.org/api/2.2/announcements
+    priority: High
+  ''']
+
+  comanage [note: '''
+    name: COManage/ACCESS Identity
+    description: User identity information
+    category: Users & Identity
+    track: Operations
+    responsible_team: Operations
+    access_level: Sensitive
+    is_canonical: true
+    canonical_source: null
+    mcp_available: false
+    mcp_package: null
+    api_endpoint: null
+    priority: Low
+  ''']
+
+  event_registrations [note: '''
+    name: Event Registrations
+    description: Registration and attendance data for events
+    category: Events & Training
+    track: Support
+    responsible_team: Support
+    access_level: Restricted
+    is_canonical: true
+    canonical_source: null
+    mcp_available: false
+    mcp_package: null
+    api_endpoint: null
+    priority: Medium
+  ''']
+
+  events [note: '''
+    name: Events and Training
+    description: Workshops, webinars, training sessions, and office hours
+    category: Events & Training
+    track: Support
+    responsible_team: Support
+    access_level: Public
+    is_canonical: false
+    canonical_source: access-support-drupal
+    mcp_available: true
+    mcp_package: @access-mcp/events
+    api_endpoint: https://support.access-ci.org/api/2.2/events
+    priority: High
+  ''']
+
+}
+
+// =============================================================================
+// ENTITIES
+// =============================================================================
+
+Table access_support_drupal {
+  nid int [pk, note: 'access: Public | Drupal node ID']
+  uuid varchar [note: 'access: Public | Drupal UUID']
+  type varchar [note: 'access: Public | Drupal content type']
+  title varchar [note: 'access: Public | Content title']
+  body text [note: 'access: Public | Content body (HTML)']
+  status boolean [note: 'access: Internal Only | Published status']
+  created timestamp [note: 'access: Public | Content creation date']
+  changed timestamp [note: 'access: Public | Last modification date']
+  uid int [note: 'access: Restricted | Author user ID']
+
+  Note: '''
+    source: access_support_drupal
+    description: ACCESS Support website CMS - canonical storage for support content
+    access_level: Varies
+  '''
+}
+
+Table affinity_groups {
+  nid int [pk, note: 'access: Public | Node ID']
+  uuid varchar [note: 'access: Public | mcp: id | Unique identifier']
+  title varchar [not null, note: 'access: Public | mcp: name | Group name']
+  body text [note: 'access: Public | mcp: description | Group description (HTML cleaned in MCP)']
+  group_id varchar [not null, note: 'access: Public | mcp: id | URL-friendly group identifier']
+  group_slug varchar [note: 'access: Public | URL slug for the group']
+  category varchar [note: 'access: Public | mcp: category | Whether this is an RP-specific or community group']
+  goals text [note: 'access: Public | Group goals and objectives']
+  coordinator_id int [note: 'access: Public | mcp: coordinator | Group coordinator (exposed as name string in MCP)']
+  slack_link varchar [note: 'access: Public | mcp: slack_link | Link to Slack channel']
+  mailing_list varchar [note: 'access: Restricted | Internal mailing list address']
+  external_email_list varchar [note: 'access: Restricted | External email list address']
+  github_org varchar [note: 'access: Public | GitHub organization URL']
+  ask_ci_forum varchar [note: 'access: Public | mcp: ask_ci_forum | Link to Ask.CI forum topic']
+  meeting_notes_link varchar [note: 'access: Public | Link to meeting notes document']
+  is_private boolean [note: 'access: Restricted | Whether the group is private']
+  private_users text [note: 'access: Restricted | List of users with access to private group']
+  image_id int [note: 'access: Public | Group logo/image']
+
+  Note: '''
+    source: affinity_groups
+    description: Community groups organized by interest or domain
+    access_level: Public
+  '''
+}
+
+Table announcements {
+  nid int [pk, note: 'access: Public | Node ID']
+  uuid varchar [note: 'access: Public | mcp: uuid | Unique identifier']
+  title varchar [not null, note: 'access: Public | mcp: title | Announcement title']
+  body text [note: 'access: Public | mcp: body | HTML content']
+  summary varchar [note: 'access: Public | mcp: summary | Short summary text']
+  published_date date [note: 'access: Public | mcp: published_date | When the announcement was published']
+  affiliation varchar [note: 'access: Public | mcp: affiliation | Whether this is an official ACCESS or community announcement']
+  external_link varchar [note: 'access: Public | mcp: external_link | Link to external resource']
+  where_to_share text [note: 'access: Internal Only | mcp: where_to_share | Distribution channels for this announcement']
+  affinity_group_id int [note: 'access: Public | mcp: affinity_group | Associated affinity group']
+  image_id int [note: 'access: Public | Associated media image']
+
+  Note: '''
+    source: announcements
+    description: Resource provider and community announcements
+    access_level: Public
+  '''
+}
+
+Table comanage {
+  user_id varchar [pk, note: 'access: Sensitive | Internal user identifier']
+  access_id varchar [note: 'access: Sensitive | ACCESS username (e.g., jsmith)']
+  email varchar [note: 'access: Sensitive | User email address (PII)']
+  name varchar [note: 'access: Restricted | User\'s display name']
+  institution varchar [note: 'access: Restricted | User\'s institutional affiliation']
+
+  Note: '''
+    source: comanage
+    description: User identity information
+    access_level: Sensitive
+  '''
+}
+
+Table event_registrations {
+  registration_id varchar [pk, note: 'access: Restricted | Registration record ID']
+  event_id int [note: 'access: Restricted | Associated event']
+  user_id varchar [note: 'access: Restricted | Registered user']
+  registration_date timestamp [note: 'access: Restricted | When the registration was submitted']
+  attendance_status varchar [note: 'access: Restricted | Registration and attendance status']
+  referral_source varchar [note: 'access: Restricted | How the registrant heard about the event']
+  registrant_name varchar [note: 'access: Sensitive | Registrant\'s name (PII)']
+  registrant_email varchar [note: 'access: Sensitive | Registrant\'s email address (PII)']
+  registrant_institution varchar [note: 'access: Restricted | Registrant\'s institutional affiliation']
+  registrant_access_id varchar [note: 'access: Sensitive | Registrant\'s ACCESS ID (PII)']
+
+  Note: '''
+    source: event_registrations
+    description: Registration and attendance data for events
+    access_level: Restricted
+  '''
+}
+
+Table events {
+  id int [pk, note: 'access: Public | Event ID']
+  uuid varchar [note: 'access: Public | Unique identifier']
+  title varchar [not null, note: 'access: Public | mcp: title | Event title']
+  description text [note: 'access: Public | mcp: description | Event description']
+  event_type varchar [not null, note: 'access: Public | mcp: type | Type of event']
+  skill_level varchar [note: 'access: Public | mcp: skill | Target skill level for attendees']
+  affiliation varchar [note: 'access: Public | Whether this is an official ACCESS or community event']
+  start_date timestamp [note: 'access: Public | mcp: start_date | Event start date and time']
+  end_date timestamp [note: 'access: Public | mcp: end_date | Event end date and time']
+  duration_hours decimal [note: 'access: Public | mcp: duration_hours | computed: true | Calculated duration in hours']
+  starts_in_hours decimal [note: 'access: Public | mcp: starts_in_hours | computed: true | Hours until event starts (negative if past)']
+  location varchar [note: 'access: Public | Physical location if applicable']
+  virtual_meeting_link varchar [note: 'access: Authenticated | mcp: virtual_meeting_link | Zoom/Teams link - requires authentication']
+  registration_url varchar [note: 'access: Public | mcp: registration_url | Link to register for the event']
+  contact varchar [note: 'access: Public | mcp: contact | Contact person or email']
+  speakers text [note: 'access: Public | Speaker names and affiliations']
+  tags text [note: 'access: Public | mcp: tags | computed: true | Parsed from comma-separated tag list']
+  affinity_group_id int [note: 'access: Public | Associated affinity group']
+
+  Note: '''
+    source: events
+    description: Workshops, webinars, training sessions, and office hours
+    access_level: Public
+  '''
+}
+
+// =============================================================================
+// RELATIONSHIPS
+// =============================================================================
+
+Ref: announcements.affinity_group_id > affinity_groups.nid
+Ref: event_registrations.event_id > events.id
+Ref: events.affinity_group_id > affinity_groups.nid

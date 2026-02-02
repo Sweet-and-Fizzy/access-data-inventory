@@ -1,0 +1,880 @@
+{
+  "generated": "2026-02-02T17:09:04.105221",
+  "source_count": 6,
+  "sources": [
+    {
+      "id": "access_support_drupal",
+      "name": "ACCESS Support Drupal",
+      "description": "ACCESS Support website CMS - canonical storage for support content",
+      "category": "Content Management",
+      "track": "Support",
+      "responsible_team": "Support",
+      "access_level": "Varies",
+      "is_canonical": true,
+      "canonical_source": null,
+      "api_endpoint": "https://support.access-ci.org",
+      "dynamic": true,
+      "priority": "High",
+      "mcp": {
+        "available": false,
+        "package": null,
+        "tools": [],
+        "notes": "Backend canonical source; content exposed via specialized APIs and MCPs"
+      },
+      "provides_data_for": [
+        "announcements",
+        "events",
+        "affinity_groups",
+        "tags"
+      ],
+      "fields": [
+        {
+          "name": "nid",
+          "type": "int",
+          "access": "Public",
+          "primary_key": true,
+          "description": "Drupal node ID"
+        },
+        {
+          "name": "uuid",
+          "type": "varchar",
+          "access": "Public",
+          "description": "Drupal UUID"
+        },
+        {
+          "name": "type",
+          "type": "varchar",
+          "access": "Public",
+          "allowed_values": [
+            "announcement",
+            "event",
+            "eventseries",
+            "eventinstance",
+            "affinity_group",
+            "page",
+            "article"
+          ],
+          "description": "Drupal content type"
+        },
+        {
+          "name": "title",
+          "type": "varchar",
+          "access": "Public",
+          "description": "Content title"
+        },
+        {
+          "name": "body",
+          "type": "text",
+          "access": "Public",
+          "description": "Content body (HTML)"
+        },
+        {
+          "name": "status",
+          "type": "boolean",
+          "access": "Internal Only",
+          "description": "Published status"
+        },
+        {
+          "name": "created",
+          "type": "timestamp",
+          "access": "Public",
+          "description": "Content creation date"
+        },
+        {
+          "name": "changed",
+          "type": "timestamp",
+          "access": "Public",
+          "description": "Last modification date"
+        },
+        {
+          "name": "uid",
+          "type": "int",
+          "access": "Restricted",
+          "references": "users.user_id",
+          "description": "Author user ID"
+        }
+      ],
+      "relationships": [
+        {
+          "type": "has_many",
+          "target": "announcements",
+          "description": "Stores announcement content"
+        },
+        {
+          "type": "has_many",
+          "target": "events",
+          "description": "Stores event content (series and instances)"
+        },
+        {
+          "type": "has_many",
+          "target": "affinity_groups",
+          "description": "Stores affinity group content"
+        },
+        {
+          "type": "has_many",
+          "target": "tags",
+          "description": "Stores taxonomy terms"
+        },
+        {
+          "type": "has_many",
+          "target": "users",
+          "description": "Stores user accounts (Drupal users, linked to COManage)"
+        }
+      ]
+    },
+    {
+      "id": "affinity_groups",
+      "name": "Affinity Groups",
+      "description": "Community groups organized by interest or domain",
+      "category": "Community & Outreach",
+      "track": "Support",
+      "responsible_team": "Support",
+      "access_level": "Public",
+      "is_canonical": false,
+      "canonical_source": "access-support-drupal",
+      "api_endpoint": "https://support.access-ci.org/api/1.1/affinity_groups",
+      "dynamic": false,
+      "priority": "High",
+      "mcp": {
+        "available": true,
+        "package": "@access-mcp/affinity-groups",
+        "tools": [
+          {
+            "name": "search_affinity_groups",
+            "method": "GET",
+            "description": "Search and filter affinity groups"
+          },
+          {
+            "name": "get_affinity_group_kb",
+            "method": "GET",
+            "description": "Get knowledge base resources for a group"
+          },
+          {
+            "name": "get_affinity_group_events",
+            "method": "GET",
+            "description": "Get events associated with a group"
+          }
+        ]
+      },
+      "fields": [
+        {
+          "name": "nid",
+          "type": "int",
+          "access": "Public",
+          "primary_key": true,
+          "description": "Node ID"
+        },
+        {
+          "name": "uuid",
+          "type": "varchar",
+          "access": "Public",
+          "mcp_name": "id",
+          "description": "Unique identifier"
+        },
+        {
+          "name": "title",
+          "type": "varchar",
+          "access": "Public",
+          "required": true,
+          "mcp_name": "name",
+          "description": "Group name"
+        },
+        {
+          "name": "body",
+          "type": "text",
+          "access": "Public",
+          "mcp_name": "description",
+          "description": "Group description (HTML cleaned in MCP)"
+        },
+        {
+          "name": "group_id",
+          "type": "varchar",
+          "access": "Public",
+          "required": true,
+          "mcp_name": "id",
+          "description": "URL-friendly group identifier"
+        },
+        {
+          "name": "group_slug",
+          "type": "varchar",
+          "access": "Public",
+          "description": "URL slug for the group"
+        },
+        {
+          "name": "category",
+          "type": "varchar",
+          "access": "Public",
+          "mcp_name": "category",
+          "allowed_values": [
+            "ACCESS_RP",
+            "Community"
+          ],
+          "description": "Whether this is an RP-specific or community group"
+        },
+        {
+          "name": "goals",
+          "type": "text",
+          "access": "Public",
+          "description": "Group goals and objectives"
+        },
+        {
+          "name": "coordinator_id",
+          "type": "int",
+          "access": "Public",
+          "references": "users.user_id",
+          "mcp_name": "coordinator",
+          "description": "Group coordinator (exposed as name string in MCP)"
+        },
+        {
+          "name": "slack_link",
+          "type": "varchar",
+          "access": "Public",
+          "mcp_name": "slack_link",
+          "description": "Link to Slack channel"
+        },
+        {
+          "name": "mailing_list",
+          "type": "varchar",
+          "access": "Restricted",
+          "description": "Internal mailing list address"
+        },
+        {
+          "name": "external_email_list",
+          "type": "varchar",
+          "access": "Restricted",
+          "description": "External email list address"
+        },
+        {
+          "name": "github_org",
+          "type": "varchar",
+          "access": "Public",
+          "description": "GitHub organization URL"
+        },
+        {
+          "name": "ask_ci_forum",
+          "type": "varchar",
+          "access": "Public",
+          "mcp_name": "ask_ci_forum",
+          "description": "Link to Ask.CI forum topic"
+        },
+        {
+          "name": "meeting_notes_link",
+          "type": "varchar",
+          "access": "Public",
+          "description": "Link to meeting notes document"
+        },
+        {
+          "name": "is_private",
+          "type": "boolean",
+          "access": "Restricted",
+          "description": "Whether the group is private"
+        },
+        {
+          "name": "private_users",
+          "type": "text",
+          "access": "Restricted",
+          "description": "List of users with access to private group"
+        },
+        {
+          "name": "image_id",
+          "type": "int",
+          "access": "Public",
+          "description": "Group logo/image"
+        }
+      ],
+      "relationships": [
+        {
+          "type": "has_one",
+          "target": "users",
+          "field": "coordinator_id",
+          "description": "Each group has a coordinator"
+        },
+        {
+          "type": "has_many",
+          "target": "events",
+          "through": "affinity_group_events",
+          "description": "Groups host events"
+        },
+        {
+          "type": "has_many",
+          "target": "announcements",
+          "through": "affinity_group_announcements",
+          "description": "Groups publish announcements"
+        },
+        {
+          "type": "has_many",
+          "target": "users",
+          "through": "affinity_group_members",
+          "description": "Groups have members"
+        },
+        {
+          "type": "has_many",
+          "target": "tags",
+          "through": "entity_tags",
+          "description": "Groups can be tagged"
+        }
+      ]
+    },
+    {
+      "id": "announcements",
+      "name": "Announcements",
+      "description": "Resource provider and community announcements",
+      "category": "Community & Outreach",
+      "track": "Support",
+      "responsible_team": "Support",
+      "access_level": "Public",
+      "is_canonical": false,
+      "canonical_source": "access-support-drupal",
+      "api_endpoint": "https://support.access-ci.org/api/2.2/announcements",
+      "dynamic": false,
+      "priority": "High",
+      "mcp": {
+        "available": true,
+        "package": "@access-mcp/announcements",
+        "tools": [
+          {
+            "name": "search_announcements",
+            "method": "GET",
+            "description": "Search announcements with filters"
+          },
+          {
+            "name": "get_my_announcements",
+            "method": "GET",
+            "description": "Get announcements authored by current user"
+          },
+          {
+            "name": "create_announcement",
+            "method": "POST",
+            "description": "Create a new announcement"
+          },
+          {
+            "name": "update_announcement",
+            "method": "PATCH",
+            "description": "Update an existing announcement"
+          },
+          {
+            "name": "delete_announcement",
+            "method": "DELETE",
+            "description": "Delete an announcement"
+          }
+        ]
+      },
+      "fields": [
+        {
+          "name": "nid",
+          "type": "int",
+          "access": "Public",
+          "primary_key": true,
+          "description": "Node ID"
+        },
+        {
+          "name": "uuid",
+          "type": "varchar",
+          "access": "Public",
+          "mcp_name": "uuid",
+          "description": "Unique identifier"
+        },
+        {
+          "name": "title",
+          "type": "varchar",
+          "access": "Public",
+          "required": true,
+          "mcp_name": "title",
+          "description": "Announcement title"
+        },
+        {
+          "name": "body",
+          "type": "text",
+          "access": "Public",
+          "mcp_name": "body",
+          "description": "HTML content"
+        },
+        {
+          "name": "summary",
+          "type": "varchar",
+          "access": "Public",
+          "mcp_name": "summary",
+          "description": "Short summary text"
+        },
+        {
+          "name": "published_date",
+          "type": "date",
+          "access": "Public",
+          "mcp_name": "published_date",
+          "description": "When the announcement was published"
+        },
+        {
+          "name": "affiliation",
+          "type": "varchar",
+          "access": "Public",
+          "mcp_name": "affiliation",
+          "allowed_values": [
+            "ACCESS Collaboration",
+            "Community"
+          ],
+          "description": "Whether this is an official ACCESS or community announcement"
+        },
+        {
+          "name": "external_link",
+          "type": "varchar",
+          "access": "Public",
+          "mcp_name": "external_link",
+          "description": "Link to external resource"
+        },
+        {
+          "name": "where_to_share",
+          "type": "text",
+          "access": "Internal Only",
+          "mcp_name": "where_to_share",
+          "allowed_values": [
+            "Announcements page",
+            "Bi-Weekly Digest",
+            "Affinity Group page",
+            "Email to Affinity Group"
+          ],
+          "description": "Distribution channels for this announcement"
+        },
+        {
+          "name": "affinity_group_id",
+          "type": "int",
+          "access": "Public",
+          "mcp_name": "affinity_group",
+          "references": "affinity_groups.nid",
+          "description": "Associated affinity group"
+        },
+        {
+          "name": "image_id",
+          "type": "int",
+          "access": "Public",
+          "description": "Associated media image"
+        }
+      ],
+      "relationships": [
+        {
+          "type": "belongs_to",
+          "target": "affinity_groups",
+          "field": "affinity_group_id",
+          "description": "Announcements can be associated with an affinity group"
+        },
+        {
+          "type": "has_many",
+          "target": "tags",
+          "through": "entity_tags",
+          "description": "Announcements can be tagged for categorization"
+        }
+      ]
+    },
+    {
+      "id": "comanage",
+      "name": "COManage/ACCESS Identity",
+      "description": "User identity information",
+      "category": "Users & Identity",
+      "track": "Operations",
+      "responsible_team": "Operations",
+      "access_level": "Sensitive",
+      "is_canonical": true,
+      "canonical_source": null,
+      "api_endpoint": null,
+      "dynamic": false,
+      "priority": "Low",
+      "mcp": {
+        "available": false,
+        "package": null,
+        "tools": [],
+        "notes": "Identity data is sensitive and not suitable for AI/MCP exposure"
+      },
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "varchar",
+          "access": "Sensitive",
+          "primary_key": true,
+          "description": "Internal user identifier"
+        },
+        {
+          "name": "access_id",
+          "type": "varchar",
+          "access": "Sensitive",
+          "description": "ACCESS username (e.g., jsmith)"
+        },
+        {
+          "name": "email",
+          "type": "varchar",
+          "access": "Sensitive",
+          "description": "User email address (PII)"
+        },
+        {
+          "name": "name",
+          "type": "varchar",
+          "access": "Restricted",
+          "description": "User's display name"
+        },
+        {
+          "name": "institution",
+          "type": "varchar",
+          "access": "Restricted",
+          "description": "User's institutional affiliation"
+        }
+      ],
+      "relationships": [
+        {
+          "type": "has_many",
+          "target": "affinity_group_members",
+          "description": "Users can be members of affinity groups"
+        },
+        {
+          "type": "has_many",
+          "target": "event_registrations",
+          "description": "Users register for events"
+        }
+      ]
+    },
+    {
+      "id": "event_registrations",
+      "name": "Event Registrations",
+      "description": "Registration and attendance data for events",
+      "category": "Events & Training",
+      "track": "Support",
+      "responsible_team": "Support",
+      "access_level": "Restricted",
+      "is_canonical": true,
+      "canonical_source": null,
+      "api_endpoint": null,
+      "dynamic": false,
+      "priority": "Medium",
+      "mcp": {
+        "available": false,
+        "package": null,
+        "tools": [],
+        "notes": "Contains PII; partial coverage via events MCP"
+      },
+      "fields": [
+        {
+          "name": "registration_id",
+          "type": "varchar",
+          "access": "Restricted",
+          "primary_key": true,
+          "description": "Registration record ID"
+        },
+        {
+          "name": "event_id",
+          "type": "int",
+          "access": "Restricted",
+          "references": "events.id",
+          "description": "Associated event"
+        },
+        {
+          "name": "user_id",
+          "type": "varchar",
+          "access": "Restricted",
+          "references": "users.user_id",
+          "description": "Registered user"
+        },
+        {
+          "name": "registration_date",
+          "type": "timestamp",
+          "access": "Restricted",
+          "description": "When the registration was submitted"
+        },
+        {
+          "name": "attendance_status",
+          "type": "varchar",
+          "access": "Restricted",
+          "allowed_values": [
+            "registered",
+            "attended",
+            "no_show",
+            "cancelled"
+          ],
+          "description": "Registration and attendance status"
+        },
+        {
+          "name": "referral_source",
+          "type": "varchar",
+          "access": "Restricted",
+          "description": "How the registrant heard about the event"
+        },
+        {
+          "name": "registrant_name",
+          "type": "varchar",
+          "access": "Sensitive",
+          "description": "Registrant's name (PII)"
+        },
+        {
+          "name": "registrant_email",
+          "type": "varchar",
+          "access": "Sensitive",
+          "description": "Registrant's email address (PII)"
+        },
+        {
+          "name": "registrant_institution",
+          "type": "varchar",
+          "access": "Restricted",
+          "description": "Registrant's institutional affiliation"
+        },
+        {
+          "name": "registrant_access_id",
+          "type": "varchar",
+          "access": "Sensitive",
+          "description": "Registrant's ACCESS ID (PII)"
+        }
+      ],
+      "relationships": [
+        {
+          "type": "belongs_to",
+          "target": "events",
+          "field": "event_id",
+          "description": "Each registration is for a specific event"
+        },
+        {
+          "type": "belongs_to",
+          "target": "users",
+          "field": "user_id",
+          "description": "Each registration is linked to a user"
+        }
+      ]
+    },
+    {
+      "id": "events",
+      "name": "Events and Training",
+      "description": "Workshops, webinars, training sessions, and office hours",
+      "category": "Events & Training",
+      "track": "Support",
+      "responsible_team": "Support",
+      "access_level": "Public",
+      "is_canonical": false,
+      "canonical_source": "access-support-drupal",
+      "api_endpoint": "https://support.access-ci.org/api/2.2/events",
+      "dynamic": false,
+      "priority": "High",
+      "mcp": {
+        "available": true,
+        "package": "@access-mcp/events",
+        "tools": [
+          {
+            "name": "search_events",
+            "method": "GET",
+            "description": "Search events with filters for type, date, skill level"
+          },
+          {
+            "name": "get_event_by_id",
+            "method": "GET",
+            "description": "Get detailed information about a specific event"
+          },
+          {
+            "name": "get_events_by_tag",
+            "method": "GET",
+            "description": "Get events filtered by tag"
+          }
+        ]
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": "int",
+          "access": "Public",
+          "primary_key": true,
+          "description": "Event ID"
+        },
+        {
+          "name": "uuid",
+          "type": "varchar",
+          "access": "Public",
+          "description": "Unique identifier"
+        },
+        {
+          "name": "title",
+          "type": "varchar",
+          "access": "Public",
+          "required": true,
+          "mcp_name": "title",
+          "description": "Event title"
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "access": "Public",
+          "mcp_name": "description",
+          "description": "Event description"
+        },
+        {
+          "name": "event_type",
+          "type": "varchar",
+          "access": "Public",
+          "required": true,
+          "mcp_name": "type",
+          "allowed_values": [
+            "Conference",
+            "Training",
+            "Office Hours",
+            "Other"
+          ],
+          "description": "Type of event"
+        },
+        {
+          "name": "skill_level",
+          "type": "varchar",
+          "access": "Public",
+          "mcp_name": "skill",
+          "allowed_values": [
+            "Beginner",
+            "Intermediate",
+            "Advanced"
+          ],
+          "description": "Target skill level for attendees"
+        },
+        {
+          "name": "affiliation",
+          "type": "varchar",
+          "access": "Public",
+          "allowed_values": [
+            "ACCESS Collaboration",
+            "Community"
+          ],
+          "description": "Whether this is an official ACCESS or community event"
+        },
+        {
+          "name": "start_date",
+          "type": "timestamp",
+          "access": "Public",
+          "mcp_name": "start_date",
+          "description": "Event start date and time"
+        },
+        {
+          "name": "end_date",
+          "type": "timestamp",
+          "access": "Public",
+          "mcp_name": "end_date",
+          "description": "Event end date and time"
+        },
+        {
+          "name": "duration_hours",
+          "type": "decimal",
+          "access": "Public",
+          "computed": true,
+          "mcp_name": "duration_hours",
+          "description": "Calculated duration in hours"
+        },
+        {
+          "name": "starts_in_hours",
+          "type": "decimal",
+          "access": "Public",
+          "computed": true,
+          "mcp_name": "starts_in_hours",
+          "description": "Hours until event starts (negative if past)"
+        },
+        {
+          "name": "location",
+          "type": "varchar",
+          "access": "Public",
+          "description": "Physical location if applicable"
+        },
+        {
+          "name": "virtual_meeting_link",
+          "type": "varchar",
+          "access": "Authenticated",
+          "mcp_name": "virtual_meeting_link",
+          "description": "Zoom/Teams link - requires authentication"
+        },
+        {
+          "name": "registration_url",
+          "type": "varchar",
+          "access": "Public",
+          "mcp_name": "registration_url",
+          "description": "Link to register for the event"
+        },
+        {
+          "name": "contact",
+          "type": "varchar",
+          "access": "Public",
+          "mcp_name": "contact",
+          "description": "Contact person or email"
+        },
+        {
+          "name": "speakers",
+          "type": "text",
+          "access": "Public",
+          "description": "Speaker names and affiliations"
+        },
+        {
+          "name": "tags",
+          "type": "text",
+          "access": "Public",
+          "computed": true,
+          "mcp_name": "tags",
+          "description": "Parsed from comma-separated tag list"
+        },
+        {
+          "name": "affinity_group_id",
+          "type": "int",
+          "access": "Public",
+          "references": "affinity_groups.nid",
+          "description": "Associated affinity group"
+        }
+      ],
+      "relationships": [
+        {
+          "type": "belongs_to",
+          "target": "affinity_groups",
+          "field": "affinity_group_id",
+          "description": "Events can be associated with an affinity group"
+        },
+        {
+          "type": "has_many",
+          "target": "tags",
+          "through": "entity_tags",
+          "description": "Events are tagged for discovery"
+        },
+        {
+          "type": "has_many",
+          "target": "event_registrations",
+          "description": "Registration records for this event"
+        }
+      ]
+    }
+  ],
+  "by_track": {
+    "Support": [
+      "access_support_drupal",
+      "affinity_groups",
+      "announcements",
+      "event_registrations",
+      "events"
+    ],
+    "Operations": [
+      "comanage"
+    ]
+  },
+  "by_category": {
+    "Content Management": [
+      "access_support_drupal"
+    ],
+    "Community & Outreach": [
+      "affinity_groups",
+      "announcements"
+    ],
+    "Users & Identity": [
+      "comanage"
+    ],
+    "Events & Training": [
+      "event_registrations",
+      "events"
+    ]
+  },
+  "by_access_level": {
+    "Varies": [
+      "access_support_drupal"
+    ],
+    "Public": [
+      "affinity_groups",
+      "announcements",
+      "events"
+    ],
+    "Sensitive": [
+      "comanage"
+    ],
+    "Restricted": [
+      "event_registrations"
+    ]
+  }
+}

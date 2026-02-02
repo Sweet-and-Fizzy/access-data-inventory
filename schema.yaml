@@ -1,0 +1,78 @@
+# Schema definition for data source files
+# This documents the expected structure and allowed values
+
+required_fields:
+  - id
+  - name
+  - description
+  - category
+  - track
+  - responsible_team
+  - access_level
+  - is_canonical
+  - priority
+
+allowed_values:
+  category:
+    - Community & Outreach
+    - Events & Training
+    - Users & Identity
+    - Content Management
+    - Allocations
+    - Resources
+    - Operations
+    - Metrics & Reporting
+
+  track:
+    - Support
+    - Operations
+    - Allocations
+    - ACO
+
+  access_level:
+    - Public
+    - Authenticated
+    - Restricted
+    - Internal Only
+    - Sensitive
+    - Varies
+
+  priority:
+    - High
+    - Medium
+    - Low
+
+  field_access:
+    - Public
+    - Authenticated
+    - Restricted
+    - Internal Only
+    - Sensitive
+
+  field_type:
+    - int
+    - varchar
+    - text
+    - boolean
+    - date
+    - timestamp
+    - decimal
+
+  relationship_type:
+    - belongs_to
+    - has_one
+    - has_many
+
+field_properties:
+  required:
+    - name
+    - type
+    - access
+    - description
+  optional:
+    - primary_key
+    - required
+    - mcp_name
+    - computed
+    - allowed_values
+    - references

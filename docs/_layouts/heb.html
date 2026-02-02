@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} - ACCESS Data Inventory</title>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,70,400;0,100,400;0,100,500;0,100,600;0,100,700;0,100,800;1,100,400&display=swap"
+  />
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --access-teal: #008597;
+      --access-teal-light: #48c0b9;
+      --access-yellow: #ffc42d;
+      --access-orange: #f07537;
+      --access-dark: #232323;
+      --access-gray: #636363;
+      --access-light: #f2f2f2;
+    }
+
+    body {
+      font-family: "Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: white;
+      color: var(--access-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ACCESS UI components will render in these divs */
+    #universal-menus, #header, #site-menus, #breadcrumbs, #footer {
+      width: 100%;
+    }
+
+    .page-header {
+      background: white;
+      padding: 40px 20px 20px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .page-header h1 {
+      font-size: 36px;
+      font-stretch: 70%;
+      font-weight: 500;
+      color: var(--access-dark);
+      margin-bottom: 10px;
+    }
+
+    .main-container {
+      display: flex;
+      flex: 1;
+    }
+
+    .sidebar {
+      width: 280px;
+      padding: 20px;
+      background: white;
+      border-right: 1px solid #ddd;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--access-gray);
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+    }
+
+    .legend-color {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+
+    .controls {
+      margin-top: 30px;
+    }
+
+    .controls label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+      color: var(--access-gray);
+      font-weight: 500;
+    }
+
+    .controls select {
+      width: 100%;
+      padding: 8px;
+      background: var(--access-light);
+      border: 1px solid #ddd;
+      color: var(--access-dark);
+      border-radius: 4px;
+      font-size: 0.85rem;
+      margin-bottom: 15px;
+      font-family: inherit;
+    }
+
+    .info-panel {
+      margin-top: 30px;
+      padding: 15px;
+      background: var(--access-light);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      display: none;
+    }
+
+    .info-panel.active {
+      display: block;
+    }
+
+    .info-panel h3 {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      color: var(--access-teal);
+      font-weight: 600;
+    }
+
+    .info-panel p {
+      color: var(--access-gray);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .info-panel .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .info-panel .tag {
+      background: white;
+      border: 1px solid #ddd;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-size: 0.75rem;
+    }
+
+    .chart-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: white;
+    }
+
+    #chart {
+      width: 100%;
+      height: 100%;
+      max-width: 800px;
+      max-height: 800px;
+    }
+
+    .node text {
+      font-size: 11px;
+      font-family: "Archivo", sans-serif;
+      fill: var(--access-gray);
+      cursor: pointer;
+      transition: fill 0.2s;
+    }
+
+    .node text:hover {
+      fill: var(--access-dark);
+    }
+
+    .node--source text {
+      fill: var(--access-orange);
+      font-weight: 600;
+    }
+
+    .node--target text {
+      fill: var(--access-teal);
+      font-weight: 600;
+    }
+
+    .link {
+      fill: none;
+      stroke: #ddd;
+      stroke-opacity: 0.6;
+      stroke-width: 1.5;
+    }
+
+    .link--source,
+    .link--target {
+      stroke-opacity: 1;
+      stroke-width: 2.5;
+    }
+
+    .link--source {
+      stroke: var(--access-orange);
+    }
+
+    .link--target {
+      stroke: var(--access-teal);
+    }
+
+    .node circle {
+      transition: r 0.2s;
+    }
+  </style>
+</head>
+<body>
+  <div id="universal-menus"></div>
+  <div id="header"></div>
+  <div id="site-menus"></div>
+  <div id="breadcrumbs"></div>
+
+  <div class="page-header">
+    <h1>{{ page.title }}</h1>
+    <p>Interactive visualization showing relationships between data sources.</p>
+  </div>
+
+  <div class="main-container">
+    <div class="sidebar">
+      <h2>Legend - By Track</h2>
+      <div id="legend"></div>
+
+      <div class="controls">
+        <label for="groupBy">Group nodes by:</label>
+        <select id="groupBy">
+          <option value="track">Track</option>
+          <option value="category">Category</option>
+          <option value="access_level">Access Level</option>
+          <option value="type">Node Type</option>
+        </select>
+
+        <label for="tension">Bundle tension:</label>
+        <select id="tension">
+          <option value="0.85">High (0.85)</option>
+          <option value="0.5">Medium (0.5)</option>
+          <option value="0.15">Low (0.15)</option>
+        </select>
+      </div>
+
+      <div class="info-panel" id="infoPanel">
+        <h3 id="infoName">Select a node</h3>
+        <p id="infoDesc"></p>
+        <div class="meta" id="infoMeta"></div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <svg id="chart"></svg>
+    </div>
+  </div>
+
+  <div id="footer"></div>
+
+  <script type="module">
+    import {
+      breadcrumbs,
+      footer,
+      header,
+      siteMenus,
+      universalMenus,
+    } from "https://unpkg.com/@access-ci/ui@0.16.0/dist/access-ci-ui.js";
+
+    // Render ACCESS UI components
+    universalMenus({
+      siteName: "Data Inventory",
+      target: document.getElementById("universal-menus"),
+    });
+
+    header({
+      siteName: "Data Inventory",
+      target: document.getElementById("header"),
+    });
+
+    siteMenus({
+      siteName: "Data Inventory",
+      target: document.getElementById("site-menus"),
+      items: [
+        { name: "Overview", href: "./" },
+        { name: "Fields", href: "field-dictionary" },
+        { name: "Connections", href: "heb-visualization" },
+        { name: "Schema", href: "erd" },
+      ],
+    });
+
+    breadcrumbs({
+      target: document.getElementById("breadcrumbs"),
+      items: [
+        { name: "Data Inventory", href: "./" },
+        { name: "{{ page.title }}" },
+      ],
+    });
+
+    footer({ target: document.getElementById("footer") });
+  </script>
+
+  <script>
+    // Color schemes using ACCESS brand colors
+    const colorSchemes = {
+      track: {
+        "Support": "#008597",      // teal
+        "Operations": "#f07537",   // orange
+        "MCP": "#48c0b9",          // teal light
+        "Allocations": "#ffc42d",  // yellow
+        "ACO": "#636363",          // gray
+        "Inferred": "#999",
+        "Unknown": "#ccc"
+      },
+      category: {
+        "Community & Outreach": "#008597",
+        "Events & Training": "#ffc42d",
+        "Users & Identity": "#f07537",
+        "Content Management": "#48c0b9",
+        "MCP Tools": "#636363",
+        "Junction Table": "#999",
+        "Referenced Entity": "#ccc",
+        "Unknown": "#ddd"
+      },
+      access_level: {
+        "Public": "#48c0b9",
+        "Authenticated": "#ffc42d",
+        "Restricted": "#f07537",
+        "Sensitive": "#e63946",
+        "Varies": "#008597",
+        "Internal Only": "#636363",
+        "Unknown": "#ccc"
+      },
+      type: {
+        "data_source": "#008597",
+        "mcp": "#48c0b9",
+        "junction": "#636363",
+        "entity": "#999",
+        "Unknown": "#ccc"
+      }
+    };
+
+    let currentGroupBy = 'track';
+    let currentTension = 0.85;
+    let inventoryData = { nodes: [], edges: [] };
+
+    // Load data from JSON file
+    fetch('inventory.json')
+      .then(response => response.json())
+      .then(data => {
+        inventoryData = buildVisualizationData(data);
+        createVisualization();
+      })
+      .catch(err => {
+        console.error('Failed to load inventory.json:', err);
+        document.querySelector('.chart-container').innerHTML =
+          '<p style="color: #e63946; padding: 40px;">Failed to load data. Make sure inventory.json is available.</p>';
+      });
+
+    // Transform inventory JSON into visualization nodes/edges
+    function buildVisualizationData(data) {
+      const nodes = [];
+      const edges = [];
+      const nodeIds = new Set();
+
+      // Add all data sources as nodes
+      for (const source of data.sources) {
+        const nodeId = source.id;
+        nodeIds.add(nodeId);
+        nodes.push({
+          id: nodeId,
+          name: source.name || nodeId,
+          description: source.description || '',
+          category: source.category || 'Unknown',
+          track: source.track || 'Unknown',
+          access_level: source.access_level || 'Unknown',
+          type: 'data_source',
+          has_mcp: source.mcp?.available || false
+        });
+
+        // Add MCP node if available
+        if (source.mcp?.available) {
+          const mcpId = `mcp_${nodeId}`;
+          if (!nodeIds.has(mcpId)) {
+            nodeIds.add(mcpId);
+            nodes.push({
+              id: mcpId,
+              name: `MCP: ${source.name || nodeId}`,
+              description: `MCP tools for ${source.name || ''}`,
+              category: 'MCP Tools',
+              track: 'MCP',
+              access_level: 'Public',
+              type: 'mcp'
+            });
+            edges.push({ source: mcpId, target: nodeId, type: 'exposes' });
+          }
+        }
+
+        // Add canonical source edge
+        if (source.canonical_source && data.sources.some(s => s.id === source.canonical_source)) {
+          edges.push({ source: source.canonical_source, target: nodeId, type: 'provides' });
+        }
+      }
+
+      // Process relationships
+      for (const source of data.sources) {
+        for (const rel of (source.relationships || [])) {
+          const target = rel.target;
+          const through = rel.through;
+
+          // Add target node if not exists
+          if (target && !nodeIds.has(target)) {
+            nodeIds.add(target);
+            nodes.push({
+              id: target,
+              name: target.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+              description: `Referenced entity: ${target}`,
+              category: 'Referenced Entity',
+              track: 'Inferred',
+              access_level: 'Unknown',
+              type: 'entity'
+            });
+          }
+
+          if (target) {
+            edges.push({ source: source.id, target: target, type: rel.type || 'related' });
+          }
+
+          // Add junction table
+          if (through) {
+            if (!nodeIds.has(through)) {
+              nodeIds.add(through);
+              nodes.push({
+                id: through,
+                name: through.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                description: `Junction table: ${through}`,
+                category: 'Junction Table',
+                track: source.track || 'Unknown',
+                access_level: 'Restricted',
+                type: 'junction'
+              });
+            }
+            edges.push({ source: source.id, target: through, type: 'has_many_through' });
+            if (target) {
+              edges.push({ source: through, target: target, type: 'joins' });
+            }
+          }
+        }
+      }
+
+      return { nodes, edges };
+    }
+
+    // Build hierarchy for D3
+    function buildHierarchy(data, groupBy) {
+      const groups = {};
+
+      data.nodes.forEach(node => {
+        const group = node[groupBy] || 'Unknown';
+        if (!groups[group]) {
+          groups[group] = [];
+        }
+        groups[group].push(node);
+      });
+
+      return {
+        name: "ACCESS",
+        children: Object.entries(groups).map(([name, children]) => ({
+          name,
+          children: children.map(c => ({
+            name: c.id,
+            data: c
+          }))
+        }))
+      };
+    }
+
+    // Create the visualization
+    function createVisualization() {
+      const svg = d3.select("#chart");
+      svg.selectAll("*").remove();
+
+      const width = Math.min(800, window.innerWidth - 320);
+      const height = Math.min(800, window.innerHeight - 250);
+      const radius = Math.min(width, height) / 2 - 120;
+
+      svg.attr("viewBox", [-width / 2, -height / 2, width, height]);
+
+      const hierarchy = buildHierarchy(inventoryData, currentGroupBy);
+      const root = d3.hierarchy(hierarchy);
+
+      // Create cluster layout
+      const cluster = d3.cluster()
+        .size([360, radius]);
+
+      cluster(root);
+
+      // Create a map of nodes by id
+      const nodeById = new Map();
+      root.leaves().forEach(d => {
+        nodeById.set(d.data.name, d);
+      });
+
+      // Create links from edges
+      const links = inventoryData.edges
+        .filter(e => nodeById.has(e.source) && nodeById.has(e.target))
+        .map(e => ({
+          source: nodeById.get(e.source),
+          target: nodeById.get(e.target),
+          type: e.type
+        }));
+
+      // Line generator with configurable tension
+      const line = d3.lineRadial()
+        .curve(d3.curveBundle.beta(currentTension))
+        .radius(d => d.y)
+        .angle(d => d.x * Math.PI / 180);
+
+      // Function to get path between two nodes
+      function path(source, target) {
+        const p = source.path(target);
+        return line(p);
+      }
+
+      // Draw links
+      const link = svg.append("g")
+        .attr("class", "links")
+        .selectAll("path")
+        .data(links)
+        .join("path")
+        .attr("class", "link")
+        .attr("d", d => path(d.source, d.target));
+
+      // Draw nodes
+      const node = svg.append("g")
+        .attr("class", "nodes")
+        .selectAll("g")
+        .data(root.leaves())
+        .join("g")
+        .attr("class", "node")
+        .attr("transform", d => `rotate(${d.x - 90}) translate(${d.y}, 0)`)
+        .on("mouseover", handleMouseOver)
+        .on("mouseout", handleMouseOut)
+        .on("click", handleClick);
+
+      // Add circles to nodes
+      const colors = colorSchemes[currentGroupBy];
+      node.append("circle")
+        .attr("r", d => d.data.data?.type === 'data_source' ? 6 : 4)
+        .attr("fill", d => {
+          const group = d.data.data?.[currentGroupBy] || "Unknown";
+          return colors[group] || colors["Unknown"];
+        });
+
+      // Add labels
+      node.append("text")
+        .attr("dy", "0.31em")
+        .attr("x", d => d.x < 180 ? 10 : -10)
+        .attr("text-anchor", d => d.x < 180 ? "start" : "end")
+        .attr("transform", d => d.x >= 180 ? "rotate(180)" : null)
+        .text(d => d.data.data?.name || d.data.name);
+
+      // Interaction handlers
+      function handleMouseOver(event, d) {
+        const sourceLinks = links.filter(l => l.source === d);
+        const targetLinks = links.filter(l => l.target === d);
+
+        link.classed("link--source", l => sourceLinks.includes(l))
+            .classed("link--target", l => targetLinks.includes(l));
+
+        node.classed("node--source", n => sourceLinks.some(l => l.target === n))
+            .classed("node--target", n => targetLinks.some(l => l.source === n));
+      }
+
+      function handleMouseOut() {
+        link.classed("link--source", false)
+            .classed("link--target", false);
+        node.classed("node--source", false)
+            .classed("node--target", false);
+      }
+
+      function handleClick(event, d) {
+        const data = d.data.data;
+        if (!data) return;
+
+        const panel = document.getElementById("infoPanel");
+        panel.classList.add("active");
+
+        document.getElementById("infoName").textContent = data.name;
+        document.getElementById("infoDesc").textContent = data.description;
+
+        const meta = document.getElementById("infoMeta");
+        meta.innerHTML = `
+          <span class="tag">${data.track || 'Unknown track'}</span>
+          <span class="tag">${data.access_level || 'Unknown access'}</span>
+          <span class="tag">${data.type || 'data_source'}</span>
+        `;
+      }
+
+      // Update legend
+      updateLegend();
+    }
+
+    function updateLegend() {
+      const legend = document.getElementById("legend");
+      const colors = colorSchemes[currentGroupBy];
+
+      // Get unique groups from nodes
+      const activeGroups = new Set(inventoryData.nodes.map(n => n[currentGroupBy] || 'Unknown'));
+
+      legend.innerHTML = Object.entries(colors)
+        .filter(([name]) => activeGroups.has(name))
+        .map(([name, color]) => `
+          <div class="legend-item">
+            <div class="legend-color" style="background: ${color}"></div>
+            <span>${name}</span>
+          </div>
+        `).join("");
+
+      // Update sidebar header
+      const label = currentGroupBy.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+      document.querySelector(".sidebar h2").textContent = `Legend - By ${label}`;
+    }
+
+    // Event listeners
+    document.getElementById("groupBy").addEventListener("change", (e) => {
+      currentGroupBy = e.target.value;
+      createVisualization();
+    });
+
+    document.getElementById("tension").addEventListener("change", (e) => {
+      currentTension = parseFloat(e.target.value);
+      createVisualization();
+    });
+
+    window.addEventListener("resize", createVisualization);
+  </script>
+</body>
+</html>

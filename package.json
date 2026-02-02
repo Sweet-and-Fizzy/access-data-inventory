@@ -1,0 +1,16 @@
+{
+  "name": "access-data-inventory",
+  "version": "1.0.0",
+  "description": "ACCESS Data Inventory - documentation generator",
+  "private": true,
+  "scripts": {
+    "generate": "python generate.py",
+    "validate": "python generate.py --validate",
+    "serve": "cd docs && python -m http.server 8080",
+    "dbdocs:login": "dbdocs login",
+    "dbdocs:build": "dbdocs build docs/inventory.dbml --project access-data-inventory"
+  },
+  "devDependencies": {
+    "dbdocs": "^1.0.1"
+  }
+}

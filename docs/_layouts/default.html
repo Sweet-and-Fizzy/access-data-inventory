@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} - ACCESS Data Inventory</title>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,70,400;0,100,400;0,100,500;0,100,600;0,100,700;0,100,800;1,100,400&display=swap"
+  />
+  <style>
+    :root {
+      --access-teal: #008597;
+      --access-teal-light: #48c0b9;
+      --access-yellow: #ffc42d;
+      --access-orange: #f07537;
+      --access-dark: #232323;
+      --access-gray: #636363;
+      --access-light: #f2f2f2;
+      --width: 100%;
+      --padding: 30px;
+    }
+
+    @media (min-width: 600px) {
+      :root { --width: 540px; }
+    }
+    @media (min-width: 768px) {
+      :root { --width: 712px; }
+    }
+    @media (min-width: 900px) {
+      :root { --width: 840px; }
+    }
+    @media (min-width: 1024px) {
+      :root { --width: 940px; }
+    }
+    @media (min-width: 1280px) {
+      :root { --width: 1180px; }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      background: white;
+      color: var(--access-dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #universal-menus, #header, #site-menus, #breadcrumbs, #footer {
+      width: 100%;
+    }
+
+    .container {
+      width: var(--width);
+      margin: 0 auto;
+      padding: 40px var(--padding);
+      flex: 1;
+    }
+
+    h1 {
+      color: var(--access-dark);
+      font-size: 36px;
+      font-stretch: 70%;
+      font-weight: 500;
+      margin-top: 60px;
+      margin-bottom: 20px;
+    }
+
+    h1:first-child {
+      margin-top: 0;
+    }
+
+    h2 {
+      color: var(--access-dark);
+      font-size: 22px;
+      font-weight: 800;
+      margin-top: 36px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      color: var(--access-teal);
+      font-size: 18px;
+      font-weight: 800;
+      margin-top: 30px;
+      margin-bottom: 10px;
+    }
+
+    p, ul, ol {
+      font-size: 1.125rem;
+      line-height: 1.875rem;
+      margin: 0 0 1.25rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    .intro {
+      font-size: 24px;
+    }
+
+    a {
+      color: var(--access-dark);
+      font-weight: 800;
+      text-decoration: underline;
+    }
+
+    a:hover, a:focus, a:active {
+      color: var(--access-teal);
+      text-decoration: none;
+    }
+
+    em {
+      color: var(--access-gray);
+    }
+
+    code {
+      background: var(--access-light);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.9em;
+      font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    }
+
+    pre {
+      background: var(--access-dark);
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-top: 1px solid var(--access-dark);
+      margin: 20px 0;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--access-dark);
+      padding: 16px;
+      text-align: left;
+    }
+
+    th {
+      font-weight: 800;
+    }
+
+    ul, ol {
+      padding-left: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div id="universal-menus"></div>
+  <div id="header"></div>
+  <div id="site-menus"></div>
+  <div id="breadcrumbs"></div>
+
+  <div class="container">
+    {{ content }}
+  </div>
+
+  <div id="footer"></div>
+
+  <script type="module">
+    import {
+      breadcrumbs,
+      footer,
+      header,
+      siteMenus,
+      universalMenus,
+    } from "https://unpkg.com/@access-ci/ui@0.16.0/dist/access-ci-ui.js";
+
+    universalMenus({
+      siteName: "Data Inventory",
+      target: document.getElementById("universal-menus"),
+    });
+
+    header({
+      siteName: "Data Inventory",
+      target: document.getElementById("header"),
+    });
+
+    siteMenus({
+      siteName: "Data Inventory",
+      target: document.getElementById("site-menus"),
+      items: [
+        { name: "Overview", href: "./" },
+        { name: "Fields", href: "field-dictionary" },
+        { name: "Connections", href: "heb-visualization" },
+        { name: "Schema", href: "erd" },
+      ],
+    });
+
+    breadcrumbs({
+      target: document.getElementById("breadcrumbs"),
+      items: [
+        { name: "{{ page.title }}" },
+      ],
+    });
+
+    footer({ target: document.getElementById("footer") });
+  </script>
+</body>
+</html>
