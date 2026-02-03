@@ -7,8 +7,10 @@ on:
       - 'data-sources/**'
       - 'generate.py'
       - 'schema.yaml'
-      - 'templates/**'
   workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: write
 
 jobs:
   generate-and-deploy:
