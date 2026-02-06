@@ -156,7 +156,14 @@ def generate_index(sources: list[dict]) -> str:
                 links.append(f"[API]({source.get('api_endpoint')})")
             links_str = " · ".join(links)
 
-            lines.append(f"| [{name}](field-dictionary#{source_id}) | {desc} | {access} | {links_str} |")
+            # Add canonical source indicator
+            canonical_note = ""
+            if not source.get('is_canonical') and source.get('canonical_source'):
+                canon_id = source['canonical_source'].replace('-', '_')
+                canon_name = next((s.get('name', canon_id) for s in sources if s.get('id') == canon_id), canon_id)
+                canonical_note = f" *(sourced from [{canon_name}](field-dictionary#{canon_id}))*"
+
+            lines.append(f"| [{name}](field-dictionary#{source_id}) | {desc}{canonical_note} | {access} | {links_str} |")
 
         lines.append("")
 
@@ -202,6 +209,21 @@ def generate_field_dictionary(sources: list[dict]) -> str:
         lines.append("")
         lines.append(f"*{source.get('description', '')}*")
         lines.append("")
+
+        # Add canonical source cross-link for non-authoritative sources
+        if not source.get('is_canonical') and source.get('canonical_source'):
+            canon_id = source['canonical_source'].replace('-', '_')
+            canon_name = next((s.get('name', canon_id) for s in sources if s.get('id') == canon_id), canon_id)
+            lines.append(f"> **Canonical source:** [{canon_name}](#{canon_id}) — this data is derived from the authoritative source above.")
+            lines.append("")
+        elif source.get('is_canonical') and source.get('provides_data_for'):
+            derived = source['provides_data_for']
+            derived_links = []
+            for d in derived:
+                d_name = next((s.get('name', d) for s in sources if s.get('id') == d), d)
+                derived_links.append(f"[{d_name}](#{d})")
+            lines.append(f"> **Authoritative source** for: {', '.join(derived_links)}")
+            lines.append("")
 
         fields = source.get('fields', [])
         if not fields:

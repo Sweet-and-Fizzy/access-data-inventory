@@ -20,6 +20,8 @@ Field-level documentation for all ACCESS data sources.
 
 *ACCESS Support website CMS - canonical storage for support content*
 
+> **Authoritative source** for: [Announcements](#announcements), [Events and Training](#events), [Affinity Groups](#affinity_groups), [tags](#tags)
+
 | Field | Type | Access | MCP Name | Description |
 |-------|------|--------|----------|-------------|
 | `nid` (PK) | int | Public |  | Drupal node ID |
@@ -45,6 +47,8 @@ Field-level documentation for all ACCESS data sources.
 <h2 id="affinity_groups">Affinity Groups</h2>
 
 *Community groups organized by interest or domain*
+
+> **Canonical source:** [ACCESS Support Drupal](#access_support_drupal) — this data is derived from the authoritative source above.
 
 | Field | Type | Access | MCP Name | Description |
 |-------|------|--------|----------|-------------|
@@ -80,6 +84,8 @@ Field-level documentation for all ACCESS data sources.
 <h2 id="announcements">Announcements</h2>
 
 *Resource provider and community announcements*
+
+> **Canonical source:** [ACCESS Support Drupal](#access_support_drupal) — this data is derived from the authoritative source above.
 
 | Field | Type | Access | MCP Name | Description |
 |-------|------|--------|----------|-------------|
@@ -148,6 +154,8 @@ Field-level documentation for all ACCESS data sources.
 <h2 id="events">Events and Training</h2>
 
 *Workshops, webinars, training sessions, and office hours*
+
+> **Canonical source:** [ACCESS Support Drupal](#access_support_drupal) — this data is derived from the authoritative source above.
 
 | Field | Type | Access | MCP Name | Description |
 |-------|------|--------|----------|-------------|

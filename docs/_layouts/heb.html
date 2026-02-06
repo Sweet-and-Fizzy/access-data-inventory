@@ -122,6 +122,8 @@
       border-radius: 6px;
       font-size: 0.85rem;
       display: none;
+      max-height: calc(100vh - 350px);
+      overflow-y: auto;
     }
 
     .info-panel.active {
@@ -199,6 +201,8 @@
       stroke: #ddd;
       stroke-opacity: 0.6;
       stroke-width: 1.5;
+      cursor: pointer;
+      pointer-events: stroke;
     }
 
     .link--source,
@@ -218,6 +222,201 @@
     .node circle {
       transition: r 0.2s;
     }
+
+    /* Canonical source dashed links */
+    .link--canonical {
+      stroke: var(--access-teal);
+      stroke-dasharray: 6, 3;
+      stroke-opacity: 0.8;
+      stroke-width: 2;
+    }
+
+    .link--canonical.link--source,
+    .link--canonical.link--target {
+      stroke-opacity: 1;
+      stroke-width: 3;
+    }
+
+    .link:hover {
+      stroke-opacity: 1;
+      stroke-width: 3;
+    }
+
+    /* FK highlight */
+    .link--fk-highlight {
+      stroke: var(--access-yellow);
+      stroke-opacity: 1;
+      stroke-width: 3;
+      animation: fk-pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes fk-pulse {
+      0%, 100% { stroke-opacity: 0.7; }
+      50% { stroke-opacity: 1; }
+    }
+
+    /* ERD-style field card in info panel */
+    .field-card {
+      margin-top: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .field-card-header {
+      background: var(--access-teal);
+      color: white;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .field-card-header a {
+      color: white;
+      text-decoration: underline;
+      font-weight: 400;
+      font-size: 0.7rem;
+    }
+
+    .field-card-body {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .field-row {
+      display: flex;
+      padding: 3px 10px;
+      font-size: 0.75rem;
+      border-bottom: 1px solid #eee;
+      align-items: center;
+    }
+
+    .field-row:last-child {
+      border-bottom: none;
+    }
+
+    .field-row:nth-child(even) {
+      background: #fafafa;
+    }
+
+    .field-name {
+      flex: 1;
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: var(--access-dark);
+    }
+
+    .field-name .pk-badge {
+      background: var(--access-teal);
+      color: white;
+      font-size: 0.55rem;
+      padding: 1px 3px;
+      border-radius: 2px;
+      margin-left: 4px;
+      font-family: "Archivo", sans-serif;
+    }
+
+    .field-name .fk-badge {
+      background: var(--access-orange);
+      color: white;
+      font-size: 0.55rem;
+      padding: 1px 3px;
+      border-radius: 2px;
+      margin-left: 4px;
+      font-family: "Archivo", sans-serif;
+      cursor: pointer;
+    }
+
+    .field-type {
+      width: 65px;
+      color: var(--access-gray);
+      font-size: 0.7rem;
+      text-align: center;
+    }
+
+    .field-access {
+      font-size: 0.6rem;
+      padding: 1px 5px;
+      border-radius: 2px;
+      text-align: center;
+      width: 70px;
+    }
+
+    .field-access.public { background: #e0f5f3; color: #006d7a; }
+    .field-access.authenticated { background: #fff3d0; color: #8a6d00; }
+    .field-access.restricted { background: #fde8dd; color: #b84d1a; }
+    .field-access.internal { background: #e8e8e8; color: #444; }
+    .field-access.sensitive { background: #fdd; color: #c00; }
+
+    /* Relationship list in info panel */
+    .rel-list {
+      margin-top: 12px;
+    }
+
+    .rel-list h4 {
+      font-size: 0.8rem;
+      color: var(--access-gray);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .rel-item {
+      font-size: 0.75rem;
+      padding: 4px 0;
+      border-bottom: 1px solid #eee;
+      line-height: 1.4;
+    }
+
+    .rel-item:last-child {
+      border-bottom: none;
+    }
+
+    .rel-type-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 1px 5px;
+      border-radius: 2px;
+      background: var(--access-light);
+      border: 1px solid #ddd;
+      margin-right: 4px;
+      font-weight: 600;
+    }
+
+    .canonical-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: var(--access-teal);
+      color: white;
+      margin-left: 6px;
+    }
+
+    .derived-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: var(--access-orange);
+      color: white;
+      margin-left: 6px;
+    }
+
+    /* Edge info panel (when clicking a connection) */
+    .edge-info h3 {
+      font-size: 0.95rem;
+    }
+
+    .edge-info .edge-detail {
+      font-size: 0.8rem;
+      color: var(--access-gray);
+      margin: 6px 0;
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
@@ -228,7 +427,7 @@
 
   <div class="page-header">
     <h1>{{ page.title }}</h1>
-    <p>Interactive visualization showing relationships between data sources.</p>
+    <p>Interactive visualization showing relationships between data sources. Click nodes to view fields and schema details. Click connections to view relationship metadata. Dashed lines indicate canonical source links.</p>
   </div>
 
   <div class="main-container">
@@ -372,7 +571,7 @@
       const edges = [];
       const nodeIds = new Set();
 
-      // Add all data sources as nodes
+      // Add all data sources as nodes (with full field/relationship data)
       for (const source of data.sources) {
         const nodeId = source.id;
         nodeIds.add(nodeId);
@@ -384,7 +583,12 @@
           track: source.track || 'Unknown',
           access_level: source.access_level || 'Unknown',
           type: 'data_source',
-          has_mcp: source.mcp?.available || false
+          has_mcp: source.mcp?.available || false,
+          is_canonical: source.is_canonical || false,
+          canonical_source: source.canonical_source ? source.canonical_source.replace(/-/g, '_') : null,
+          provides_data_for: source.provides_data_for || [],
+          fields: source.fields || [],
+          relationships: source.relationships || []
         });
 
         // Add MCP node if available
@@ -401,13 +605,31 @@
               access_level: 'Public',
               type: 'mcp'
             });
-            edges.push({ source: mcpId, target: nodeId, type: 'exposes' });
+            edges.push({
+              source: mcpId,
+              target: nodeId,
+              type: 'exposes',
+              description: `MCP tools for ${source.name || ''}`,
+              source_name: `MCP: ${source.name || nodeId}`,
+              target_name: source.name || nodeId
+            });
           }
         }
 
-        // Add canonical source edge
-        if (source.canonical_source && data.sources.some(s => s.id === source.canonical_source)) {
-          edges.push({ source: source.canonical_source, target: nodeId, type: 'provides' });
+        // Add canonical source edge (normalize hyphens to underscores for ID matching)
+        if (source.canonical_source) {
+          const canonId = source.canonical_source.replace(/-/g, '_');
+          if (data.sources.some(s => s.id === canonId)) {
+            edges.push({
+              source: canonId,
+              target: nodeId,
+              type: 'provides',
+              description: `${source.name} is derived from this canonical source`,
+              source_name: data.sources.find(s => s.id === canonId)?.name || canonId,
+              target_name: source.name || nodeId,
+              is_canonical: true
+            });
+          }
         }
       }
 
@@ -432,7 +654,16 @@
           }
 
           if (target) {
-            edges.push({ source: source.id, target: target, type: rel.type || 'related' });
+            edges.push({
+              source: source.id,
+              target: target,
+              type: rel.type || 'related',
+              field: rel.field || null,
+              through: rel.through || null,
+              description: rel.description || '',
+              source_name: source.name || source.id,
+              target_name: target.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+            });
           }
 
           // Add junction table
@@ -446,12 +677,31 @@
                 category: 'Junction Table',
                 track: source.track || 'Unknown',
                 access_level: 'Restricted',
-                type: 'junction'
+                type: 'junction',
+                is_canonical: false,
+                canonical_source: null,
+                provides_data_for: [],
+                fields: [],
+                relationships: []
               });
             }
-            edges.push({ source: source.id, target: through, type: 'has_many_through' });
+            edges.push({
+              source: source.id,
+              target: through,
+              type: 'has_many_through',
+              description: `${source.name || source.id} connects through ${through}`,
+              source_name: source.name || source.id,
+              target_name: through.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+            });
             if (target) {
-              edges.push({ source: through, target: target, type: 'joins' });
+              edges.push({
+                source: through,
+                target: target,
+                type: 'joins',
+                description: `Joins to ${target}`,
+                source_name: through.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                target_name: target.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+              });
             }
           }
         }
@@ -510,13 +760,19 @@
         nodeById.set(d.data.name, d);
       });
 
-      // Create links from edges
+      // Create links from edges (carry through all metadata)
       const links = inventoryData.edges
         .filter(e => nodeById.has(e.source) && nodeById.has(e.target))
         .map(e => ({
           source: nodeById.get(e.source),
           target: nodeById.get(e.target),
-          type: e.type
+          type: e.type,
+          field: e.field || null,
+          through: e.through || null,
+          description: e.description || '',
+          source_name: e.source_name || e.source,
+          target_name: e.target_name || e.target,
+          is_canonical: e.is_canonical || false
         }));
 
       // Line generator with configurable tension
@@ -531,14 +787,15 @@
         return line(p);
       }
 
-      // Draw links
+      // Draw links (canonical links get dashed style)
       const link = svg.append("g")
         .attr("class", "links")
         .selectAll("path")
         .data(links)
         .join("path")
-        .attr("class", "link")
-        .attr("d", d => path(d.source, d.target));
+        .attr("class", d => `link${d.is_canonical ? ' link--canonical' : ''}`)
+        .attr("d", d => path(d.source, d.target))
+        .on("click", handleLinkClick);
 
       // Draw nodes
       const node = svg.append("g")
@@ -592,18 +849,150 @@
         const data = d.data.data;
         if (!data) return;
 
+        // Clear FK highlights
+        link.classed("link--fk-highlight", false);
+
         const panel = document.getElementById("infoPanel");
         panel.classList.add("active");
 
-        document.getElementById("infoName").textContent = data.name;
+        document.getElementById("infoName").innerHTML = data.name +
+          (data.is_canonical ? '<span class="canonical-badge">Authoritative</span>' : '') +
+          (!data.is_canonical && data.canonical_source ? '<span class="derived-badge">Derived</span>' : '');
         document.getElementById("infoDesc").textContent = data.description;
 
-        const meta = document.getElementById("infoMeta");
-        meta.innerHTML = `
+        let metaHTML = `
           <span class="tag">${data.track || 'Unknown track'}</span>
           <span class="tag">${data.access_level || 'Unknown access'}</span>
           <span class="tag">${data.type || 'data_source'}</span>
         `;
+
+        // Canonical source note
+        if (!data.is_canonical && data.canonical_source) {
+          const canonNode = inventoryData.nodes.find(n => n.id === data.canonical_source);
+          const canonName = canonNode ? canonNode.name : data.canonical_source;
+          metaHTML += `<span class="tag" style="background: var(--access-teal); color: white;">Sourced from: ${canonName}</span>`;
+        }
+        if (data.is_canonical && data.provides_data_for && data.provides_data_for.length > 0) {
+          metaHTML += `<span class="tag" style="background: var(--access-teal); color: white;">Provides data for: ${data.provides_data_for.join(', ')}</span>`;
+        }
+
+        const meta = document.getElementById("infoMeta");
+        meta.innerHTML = metaHTML;
+
+        // Build ERD-style field card for data sources
+        let extraHTML = '';
+        if (data.type === 'data_source' && data.fields && data.fields.length > 0) {
+          const accessClass = (a) => {
+            if (!a) return 'public';
+            const lower = a.toLowerCase();
+            if (lower === 'internal only') return 'internal';
+            return lower;
+          };
+
+          let fieldsHTML = data.fields.map(f => {
+            let nameHTML = f.name;
+            if (f.primary_key) nameHTML += '<span class="pk-badge">PK</span>';
+            if (f.references) nameHTML += `<span class="fk-badge" data-ref="${f.references}" title="References: ${f.references}">FK</span>`;
+            return `<div class="field-row">
+              <span class="field-name">${nameHTML}</span>
+              <span class="field-type">${f.type || ''}</span>
+              <span class="field-access ${accessClass(f.access)}">${f.access || ''}</span>
+            </div>`;
+          }).join('');
+
+          extraHTML += `<div class="field-card">
+            <div class="field-card-header">
+              <span>Fields (${data.fields.length})</span>
+              <a href="field-dictionary#${data.id}">View full details</a>
+            </div>
+            <div class="field-card-body">${fieldsHTML}</div>
+          </div>`;
+
+          // Relationships section
+          if (data.relationships && data.relationships.length > 0) {
+            let relHTML = data.relationships.map(r => {
+              const relType = (r.type || '').replace(/_/g, ' ');
+              const throughNote = r.through ? ` through <code>${r.through}</code>` : '';
+              const fieldNote = r.field ? ` via <code>${r.field}</code>` : '';
+              return `<div class="rel-item">
+                <span class="rel-type-badge">${relType}</span>
+                <strong>${r.target}</strong>${fieldNote}${throughNote}
+                <br><span style="color: var(--access-gray);">${r.description || ''}</span>
+              </div>`;
+            }).join('');
+
+            extraHTML += `<div class="rel-list">
+              <h4>Relationships</h4>
+              ${relHTML}
+            </div>`;
+          }
+        }
+
+        // Inject extra HTML after meta
+        const existingExtra = panel.querySelector('.panel-extra');
+        if (existingExtra) existingExtra.remove();
+        if (extraHTML) {
+          const div = document.createElement('div');
+          div.className = 'panel-extra';
+          div.innerHTML = extraHTML;
+          panel.appendChild(div);
+
+          // FK badge click: highlight the corresponding link
+          div.querySelectorAll('.fk-badge').forEach(badge => {
+            badge.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const ref = badge.dataset.ref;
+              const refTable = ref.split('.')[0];
+              link.classed("link--fk-highlight", l => {
+                const srcId = l.source.data?.name || l.source;
+                const tgtId = l.target.data?.name || l.target;
+                return (srcId === data.id && tgtId === refTable) ||
+                       (tgtId === data.id && srcId === refTable);
+              });
+            });
+          });
+        }
+      }
+
+      function handleLinkClick(event, d) {
+        event.stopPropagation();
+
+        // Clear FK highlights
+        link.classed("link--fk-highlight", false);
+
+        const panel = document.getElementById("infoPanel");
+        panel.classList.add("active");
+
+        const srcName = d.source_name || d.source.data?.data?.name || '?';
+        const tgtName = d.target_name || d.target.data?.data?.name || '?';
+        const relType = (d.type || 'related').replace(/_/g, ' ');
+
+        document.getElementById("infoName").innerHTML = `<span class="edge-info">${srcName} → ${tgtName}</span>`;
+
+        let descHTML = `<span class="rel-type-badge">${relType}</span>`;
+        if (d.is_canonical) {
+          descHTML += ' <span class="canonical-badge">Canonical Link</span>';
+        }
+        document.getElementById("infoDesc").innerHTML = descHTML;
+
+        let metaHTML = '';
+        if (d.field) {
+          metaHTML += `<span class="tag">Field: <code>${d.field}</code></span>`;
+        }
+        if (d.through) {
+          metaHTML += `<span class="tag">Through: <code>${d.through}</code></span>`;
+        }
+        if (d.description) {
+          metaHTML += `<span class="tag">${d.description}</span>`;
+        }
+        document.getElementById("infoMeta").innerHTML = metaHTML;
+
+        // Clear extra panel content
+        const existingExtra = panel.querySelector('.panel-extra');
+        if (existingExtra) existingExtra.remove();
+
+        // Highlight this specific link
+        link.classed("link--fk-highlight", l => l === d);
       }
 
       // Update legend
@@ -624,7 +1013,14 @@
             <div class="legend-color" style="background: ${color}"></div>
             <span>${name}</span>
           </div>
-        `).join("");
+        `).join("") + `
+          <div class="legend-item" style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #ddd;">
+            <svg width="24" height="14" style="margin-right: 10px; flex-shrink: 0;">
+              <line x1="0" y1="7" x2="24" y2="7" stroke="#008597" stroke-width="2" stroke-dasharray="4,2"/>
+            </svg>
+            <span>Canonical source link</span>
+          </div>
+        `;
 
       // Update sidebar header
       const label = currentGroupBy.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
