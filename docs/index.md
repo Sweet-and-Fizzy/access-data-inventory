@@ -8,6 +8,15 @@ title: Data Inventory
 {: .intro}
 Unified documentation for ACCESS data sources, APIs, and MCP tools.
 
+## Goals
+
+The ACCESS ecosystem spans dozens of data sources across multiple teams and tracks. This project exists to bring clarity and structure to that landscape so teams can work with data more effectively.
+
+- **Catalog every ACCESS data source** in a single, version-controlled inventory
+- **Document fields, relationships, and access levels** so consumers know what's available and how to use it
+- **Enable discovery across tracks** by generating browsable docs and interactive diagrams
+- **Power AI tools and automation** by providing machine-readable metadata that integrates with MCP servers, agents, and other workflows
+
 ## Data Sources
 
 ### Operations
@@ -33,3 +42,4 @@ Unified documentation for ACCESS data sources, APIs, and MCP tools.
 - [Schema](erd) — Entity-relationship diagram
 - [DBML](inventory.dbml) — Raw schema for dbdiagram.io
 - [JSON](inventory.json) — Machine-readable export
+- [Repository](https://github.com/Sweet-and-Fizzy/access-data-inventory) — Source files and contribution guide
