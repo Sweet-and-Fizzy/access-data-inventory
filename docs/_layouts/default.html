@@ -210,12 +210,20 @@
       ],
     });
 
+    {% if page.url == "/" %}
+    breadcrumbs({
+      target: document.getElementById("breadcrumbs"),
+      items: [{ name: "Data Inventory" }],
+    });
+    {% else %}
     breadcrumbs({
       target: document.getElementById("breadcrumbs"),
       items: [
+        { name: "Data Inventory", href: "./" },
         { name: "{{ page.title }}" },
       ],
     });
+    {% endif %}
 
     footer({ target: document.getElementById("footer") });
   </script>

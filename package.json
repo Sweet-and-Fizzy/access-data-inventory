@@ -6,7 +6,8 @@
   "scripts": {
     "generate": "python generate.py",
     "validate": "python generate.py --validate",
-    "serve": "cd docs && python -m http.server 8080",
+    "serve": "cd docs && bundle exec jekyll serve --port 8080",
+    "preview": "python generate.py && cd docs && bundle exec jekyll serve --port 8080",
     "dbdocs:login": "dbdocs login",
     "dbdocs:build": "dbdocs build docs/inventory.dbml --project access-data-inventory"
   },
