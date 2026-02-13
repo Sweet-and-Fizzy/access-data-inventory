@@ -1,5 +1,5 @@
 // ACCESS Data Inventory
-// Generated: 2026-02-06 14:52
+// Generated: 2026-02-13 13:34
 // Source: data-sources/*.md
 
 // =============================================================================
@@ -104,127 +104,163 @@ Enum data_source {
 // =============================================================================
 
 Table access_support_drupal {
-  nid int [pk, note: 'access: Public | Drupal node ID']
-  uuid varchar [note: 'access: Public | Drupal UUID']
-  type varchar [note: 'access: Public | Drupal content type']
-  title varchar [note: 'access: Public | Content title']
-  body text [note: 'access: Public | Content body (HTML)']
-  status boolean [note: 'access: Internal Only | Published status']
-  created timestamp [note: 'access: Public | Content creation date']
-  changed timestamp [note: 'access: Public | Last modification date']
+  nid int [pk, note: 'access: Public | semantic: entity_id | Drupal node ID']
+  uuid varchar [note: 'access: Public | semantic: uuid | Drupal UUID']
+  type varchar [note: 'access: Public | semantic: entity_type | Drupal content type']
+  title varchar [note: 'access: Public | semantic: entity_name | Content title']
+  body text [note: 'access: Public | semantic: entity_description | Content body (HTML)']
+  status boolean [note: 'access: Internal Only | semantic: entity_status | Published status']
+  created timestamp [note: 'access: Public | semantic: date_created | Content creation date']
+  changed timestamp [note: 'access: Public | semantic: date_modified | Last modification date']
   uid int [note: 'access: Restricted | Author user ID']
 
   Note: '''
     source: access_support_drupal
     description: ACCESS Support website CMS - canonical storage for support content
     access_level: Varies
+    use_cases:
+      - What content types are stored in the ACCESS Support CMS?
+      - When was a specific piece of content last modified?
+      - How many published nodes exist by content type?
   '''
 }
 
 Table affinity_groups {
-  nid int [pk, note: 'access: Public | Node ID']
-  uuid varchar [note: 'access: Public | mcp: id | Unique identifier']
-  title varchar [not null, note: 'access: Public | mcp: name | Group name']
-  body text [note: 'access: Public | mcp: description | Group description (HTML cleaned in MCP)']
-  group_id varchar [not null, note: 'access: Public | mcp: id | URL-friendly group identifier']
+  nid int [pk, note: 'access: Public | semantic: entity_id | Node ID']
+  uuid varchar [note: 'access: Public | mcp: id | semantic: uuid | Unique identifier']
+  title varchar [not null, note: 'access: Public | mcp: name | semantic: entity_name | Group name']
+  body text [note: 'access: Public | mcp: description | semantic: entity_description | Group description (HTML cleaned in MCP)']
+  group_id varchar [not null, note: 'access: Public | mcp: id | semantic: entity_id | URL-friendly group identifier']
   group_slug varchar [note: 'access: Public | URL slug for the group']
-  category varchar [note: 'access: Public | mcp: category | Whether this is an RP-specific or community group']
-  goals text [note: 'access: Public | Group goals and objectives']
+  category varchar [note: 'access: Public | mcp: category | semantic: entity_type | Whether this is an RP-specific or community group']
+  goals text [note: 'access: Public | semantic: entity_summary | Group goals and objectives']
   coordinator_id int [note: 'access: Public | mcp: coordinator | Group coordinator (exposed as name string in MCP)']
-  slack_link varchar [note: 'access: Public | mcp: slack_link | Link to Slack channel']
-  mailing_list varchar [note: 'access: Restricted | Internal mailing list address']
-  external_email_list varchar [note: 'access: Restricted | External email list address']
-  github_org varchar [note: 'access: Public | GitHub organization URL']
-  ask_ci_forum varchar [note: 'access: Public | mcp: ask_ci_forum | Link to Ask.CI forum topic']
-  meeting_notes_link varchar [note: 'access: Public | Link to meeting notes document']
+  slack_link varchar [note: 'access: Public | mcp: slack_link | semantic: url_external | Link to Slack channel']
+  mailing_list varchar [note: 'access: Restricted | semantic: contact_info | Internal mailing list address']
+  external_email_list varchar [note: 'access: Restricted | semantic: contact_info | External email list address']
+  github_org varchar [note: 'access: Public | semantic: url_external | GitHub organization URL']
+  ask_ci_forum varchar [note: 'access: Public | mcp: ask_ci_forum | semantic: url_external | Link to Ask.CI forum topic']
+  meeting_notes_link varchar [note: 'access: Public | semantic: url_external | Link to meeting notes document']
   is_private boolean [note: 'access: Restricted | Whether the group is private']
   private_users text [note: 'access: Restricted | List of users with access to private group']
-  image_id int [note: 'access: Public | Group logo/image']
+  image_id int [note: 'access: Public | semantic: media_ref | Group logo/image']
 
   Note: '''
     source: affinity_groups
     description: Community groups organized by interest or domain
     access_level: Public
+    use_cases:
+      - Which affinity groups are available for a specific research domain?
+      - Who coordinates a particular affinity group?
+      - What events are associated with an affinity group?
+      - How can I join or contact an affinity group?
+    constraints:
+      - privacy: Mailing lists, private group flags, and membership lists are restricted and must not be exposed through public APIs or AI tools.
   '''
 }
 
 Table announcements {
-  nid int [pk, note: 'access: Public | Node ID']
-  uuid varchar [note: 'access: Public | mcp: uuid | Unique identifier']
-  title varchar [not null, note: 'access: Public | mcp: title | Announcement title']
-  body text [note: 'access: Public | mcp: body | HTML content']
-  summary varchar [note: 'access: Public | mcp: summary | Short summary text']
-  published_date date [note: 'access: Public | mcp: published_date | When the announcement was published']
-  affiliation varchar [note: 'access: Public | mcp: affiliation | Whether this is an official ACCESS or community announcement']
-  external_link varchar [note: 'access: Public | mcp: external_link | Link to external resource']
+  nid int [pk, note: 'access: Public | semantic: entity_id | Node ID']
+  uuid varchar [note: 'access: Public | mcp: uuid | semantic: uuid | Unique identifier']
+  title varchar [not null, note: 'access: Public | mcp: title | semantic: entity_name | Announcement title']
+  body text [note: 'access: Public | mcp: body | semantic: entity_description | HTML content']
+  summary varchar [note: 'access: Public | mcp: summary | semantic: entity_summary | Short summary text']
+  published_date date [note: 'access: Public | mcp: published_date | semantic: date_published | When the announcement was published']
+  affiliation varchar [note: 'access: Public | mcp: affiliation | semantic: affiliation | Whether this is an official ACCESS or community announcement']
+  external_link varchar [note: 'access: Public | mcp: external_link | semantic: url_external | Link to external resource']
   where_to_share text [note: 'access: Internal Only | mcp: where_to_share | Distribution channels for this announcement']
   affinity_group_id int [note: 'access: Public | mcp: affinity_group | Associated affinity group']
-  image_id int [note: 'access: Public | Associated media image']
+  image_id int [note: 'access: Public | semantic: media_ref | Associated media image']
 
   Note: '''
     source: announcements
     description: Resource provider and community announcements
     access_level: Public
+    use_cases:
+      - What announcements have been published this week?
+      - Are there any announcements related to a specific affinity group?
+      - What resource provider updates have been shared recently?
   '''
 }
 
 Table comanage {
-  user_id varchar [pk, note: 'access: Sensitive | Internal user identifier']
-  access_id varchar [note: 'access: Sensitive | ACCESS username (e.g., jsmith)']
-  email varchar [note: 'access: Sensitive | User email address (PII)']
-  name varchar [note: 'access: Restricted | User\'s display name']
-  institution varchar [note: 'access: Restricted | User\'s institutional affiliation']
+  user_id varchar [pk, note: 'access: Sensitive | semantic: entity_id | Internal user identifier']
+  access_id varchar [note: 'access: Sensitive | semantic: entity_id | ACCESS username (e.g., jsmith)']
+  email varchar [note: 'access: Sensitive | semantic: person_email | User email address (PII)']
+  name varchar [note: 'access: Restricted | semantic: person_name | User\'s display name']
+  institution varchar [note: 'access: Restricted | semantic: institution | User\'s institutional affiliation']
 
   Note: '''
     source: comanage
     description: User identity information
     access_level: Sensitive
+    use_cases:
+      - How many unique users are registered in ACCESS?
+      - Which institutions have the most ACCESS users?
+      - Is a specific user affiliated with a particular institution?
+    constraints:
+      - privacy: Contains PII (names, emails, ACCESS IDs). Must not be exposed through public APIs, AI tools, or MCP servers.
+      - acceptable_use: Identity data may only be accessed by named individuals with legitimate need or systems with explicit authorization.
+      - regulatory: Subject to institutional data handling agreements and FERPA considerations for student researchers.
   '''
 }
 
 Table event_registrations {
-  registration_id varchar [pk, note: 'access: Restricted | Registration record ID']
+  registration_id varchar [pk, note: 'access: Restricted | semantic: entity_id | Registration record ID']
   event_id int [note: 'access: Restricted | Associated event']
   user_id varchar [note: 'access: Restricted | Registered user']
-  registration_date timestamp [note: 'access: Restricted | When the registration was submitted']
-  attendance_status varchar [note: 'access: Restricted | Registration and attendance status']
+  registration_date timestamp [note: 'access: Restricted | semantic: date_created | When the registration was submitted']
+  attendance_status varchar [note: 'access: Restricted | semantic: entity_status | Registration and attendance status']
   referral_source varchar [note: 'access: Restricted | How the registrant heard about the event']
-  registrant_name varchar [note: 'access: Sensitive | Registrant\'s name (PII)']
-  registrant_email varchar [note: 'access: Sensitive | Registrant\'s email address (PII)']
-  registrant_institution varchar [note: 'access: Restricted | Registrant\'s institutional affiliation']
-  registrant_access_id varchar [note: 'access: Sensitive | Registrant\'s ACCESS ID (PII)']
+  registrant_name varchar [note: 'access: Sensitive | semantic: person_name | Registrant\'s name (PII)']
+  registrant_email varchar [note: 'access: Sensitive | semantic: person_email | Registrant\'s email address (PII)']
+  registrant_institution varchar [note: 'access: Restricted | semantic: institution | Registrant\'s institutional affiliation']
+  registrant_access_id varchar [note: 'access: Sensitive | semantic: entity_id | Registrant\'s ACCESS ID (PII)']
 
   Note: '''
     source: event_registrations
     description: Registration and attendance data for events
     access_level: Restricted
+    use_cases:
+      - How many people registered for a specific event?
+      - What is the attendance rate for training sessions?
+      - Which institutions are most represented at ACCESS events?
+      - How do registrants hear about ACCESS events?
+    constraints:
+      - privacy: Contains PII (names, emails, ACCESS IDs). Must not be exposed through public APIs or AI tools.
+      - acceptable_use: Registration data may only be used for event management, reporting, and outreach effectiveness analysis. Individual-level data must not be shared outside authorized teams.
   '''
 }
 
 Table events {
-  id int [pk, note: 'access: Public | Event ID']
-  uuid varchar [note: 'access: Public | Unique identifier']
-  title varchar [not null, note: 'access: Public | mcp: title | Event title']
-  description text [note: 'access: Public | mcp: description | Event description']
-  event_type varchar [not null, note: 'access: Public | mcp: type | Type of event']
-  skill_level varchar [note: 'access: Public | mcp: skill | Target skill level for attendees']
-  affiliation varchar [note: 'access: Public | Whether this is an official ACCESS or community event']
-  start_date timestamp [note: 'access: Public | mcp: start_date | Event start date and time']
-  end_date timestamp [note: 'access: Public | mcp: end_date | Event end date and time']
-  duration_hours decimal [note: 'access: Public | mcp: duration_hours | computed: true | Calculated duration in hours']
-  starts_in_hours decimal [note: 'access: Public | mcp: starts_in_hours | computed: true | Hours until event starts (negative if past)']
-  location varchar [note: 'access: Public | Physical location if applicable']
-  virtual_meeting_link varchar [note: 'access: Authenticated | mcp: virtual_meeting_link | Zoom/Teams link - requires authentication']
-  registration_url varchar [note: 'access: Public | mcp: registration_url | Link to register for the event']
-  contact varchar [note: 'access: Public | mcp: contact | Contact person or email']
-  speakers text [note: 'access: Public | Speaker names and affiliations']
-  tags text [note: 'access: Public | mcp: tags | computed: true | Parsed from comma-separated tag list']
+  id int [pk, note: 'access: Public | semantic: entity_id | Event ID']
+  uuid varchar [note: 'access: Public | semantic: uuid | Unique identifier']
+  title varchar [not null, note: 'access: Public | mcp: title | semantic: entity_name | Event title']
+  description text [note: 'access: Public | mcp: description | semantic: entity_description | Event description']
+  event_type varchar [not null, note: 'access: Public | mcp: type | semantic: entity_type | Type of event']
+  skill_level varchar [note: 'access: Public | mcp: skill | semantic: skill_level | Target skill level for attendees']
+  affiliation varchar [note: 'access: Public | semantic: affiliation | Whether this is an official ACCESS or community event']
+  start_date timestamp [note: 'access: Public | mcp: start_date | semantic: date_start | Event start date and time']
+  end_date timestamp [note: 'access: Public | mcp: end_date | semantic: date_end | Event end date and time']
+  duration_hours decimal [note: 'access: Public | mcp: duration_hours | computed: true | semantic: duration | Calculated duration in hours']
+  starts_in_hours decimal [note: 'access: Public | mcp: starts_in_hours | computed: true | semantic: time_relative | Hours until event starts (negative if past)']
+  location varchar [note: 'access: Public | semantic: location | Physical location if applicable']
+  virtual_meeting_link varchar [note: 'access: Authenticated | mcp: virtual_meeting_link | semantic: url_meeting | Zoom/Teams link - requires authentication']
+  registration_url varchar [note: 'access: Public | mcp: registration_url | semantic: url_registration | Link to register for the event']
+  contact varchar [note: 'access: Public | mcp: contact | semantic: contact_info | Contact person or email']
+  speakers text [note: 'access: Public | semantic: person_name | Speaker names and affiliations']
+  tags text [note: 'access: Public | mcp: tags | computed: true | semantic: tags | Parsed from comma-separated tag list']
   affinity_group_id int [note: 'access: Public | Associated affinity group']
 
   Note: '''
     source: events
     description: Workshops, webinars, training sessions, and office hours
     access_level: Public
+    use_cases:
+      - What training sessions are available for beginners this month?
+      - Which events are associated with a specific affinity group?
+      - How many office hours are scheduled for next week?
+      - What events require registration?
   '''
 }
 

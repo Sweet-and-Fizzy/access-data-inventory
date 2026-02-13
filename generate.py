@@ -75,6 +75,11 @@ def validate_source(source: dict, schema: dict) -> list[str]:
     if 'priority' in source and source['priority'] not in allowed.get('priority', []):
         errors.append(f"{source_id}: Invalid priority '{source['priority']}'")
 
+    for constraint in source.get('constraints', []):
+        ctype = constraint.get('type', '')
+        if ctype not in allowed.get('constraint_type', []):
+            errors.append(f"{source_id}: Invalid constraint type '{ctype}'")
+
     for field in source.get('fields', []):
         field_name = field.get('name', 'unknown')
 
@@ -83,6 +88,9 @@ def validate_source(source: dict, schema: dict) -> list[str]:
 
         if 'type' in field and field['type'] not in allowed.get('field_type', []):
             errors.append(f"{source_id}.{field_name}: Invalid type '{field['type']}'")
+
+        if 'semantic_type' in field and field['semantic_type'] not in allowed.get('semantic_type', []):
+            errors.append(f"{source_id}.{field_name}: Invalid semantic_type '{field['semantic_type']}'")
 
     return errors
 
@@ -125,6 +133,15 @@ def generate_index(sources: list[dict]) -> str:
         "",
         "{: .intro}",
         "Unified documentation for ACCESS data sources, APIs, and MCP tools.",
+        "",
+        "## Goals",
+        "",
+        "The ACCESS ecosystem spans dozens of data sources across multiple teams and tracks. This project exists to bring clarity and structure to that landscape so teams can work with data more effectively.",
+        "",
+        "- **Catalog every ACCESS data source** in a single, version-controlled inventory",
+        "- **Document fields, relationships, and access levels** so consumers know what's available and how to use it",
+        "- **Enable discovery across tracks** by generating browsable docs and interactive diagrams",
+        "- **Power AI tools and automation** by providing machine-readable metadata that integrates with MCP servers, agents, and other workflows",
         "",
     ]
 
@@ -175,6 +192,7 @@ def generate_index(sources: list[dict]) -> str:
     lines.append("- [Schema](erd) — Entity-relationship diagram")
     lines.append("- [DBML](inventory.dbml) — Raw schema for dbdiagram.io")
     lines.append("- [JSON](inventory.json) — Machine-readable export")
+    lines.append("- [Repository](https://github.com/Sweet-and-Fizzy/access-data-inventory) — Source files and contribution guide")
     lines.append("")
 
     return "\n".join(lines)
@@ -225,6 +243,25 @@ def generate_field_dictionary(sources: list[dict]) -> str:
             lines.append(f"> **Authoritative source** for: {', '.join(derived_links)}")
             lines.append("")
 
+        # Render use_cases
+        use_cases = source.get('use_cases', [])
+        if use_cases:
+            lines.append("**Example questions this data can answer:**")
+            lines.append("")
+            for uc in use_cases:
+                lines.append(f"- {uc}")
+            lines.append("")
+
+        # Render constraints
+        constraints = source.get('constraints', [])
+        if constraints:
+            lines.append("**Constraints:**")
+            lines.append("")
+            for c in constraints:
+                ctype = c.get('type', '').replace('_', ' ').title()
+                lines.append(f"- **{ctype}:** {c.get('description', '')}")
+            lines.append("")
+
         fields = source.get('fields', [])
         if not fields:
             lines.append("*No fields documented.*")
@@ -239,17 +276,18 @@ def generate_field_dictionary(sources: list[dict]) -> str:
             req = " *" if field.get('required') else ""
             computed = " (computed)" if field.get('computed') else ""
             mcp_name = field.get('mcp_name', '')
+            sem = f" [{field['semantic_type']}]" if field.get('semantic_type') else ""
 
             lines.append(
                 f"| `{field.get('name', '')}`{pk}{req} | "
                 f"{field.get('type', '')} | "
                 f"{field.get('access', '')} | "
                 f"{mcp_name} | "
-                f"{field.get('description', '')}{computed} |"
+                f"{field.get('description', '')}{computed}{sem} |"
             )
 
         lines.append("")
-        lines.append("*PK = Primary Key, * = Required*")
+        lines.append("*PK = Primary Key, * = Required, [type] = Semantic Type*")
         lines.append("")
 
         relationships = source.get('relationships', [])
@@ -332,6 +370,8 @@ def generate_dbml(sources: list[dict]) -> str:
                 note_parts.append(f"mcp: {field.get('mcp_name')}")
             if field.get('computed'):
                 note_parts.append("computed: true")
+            if field.get('semantic_type'):
+                note_parts.append(f"semantic: {field.get('semantic_type')}")
             if field.get('description'):
                 # Escape apostrophes for DBML single-quoted strings
                 desc = field.get('description').replace("'", "\\'")
@@ -349,6 +389,22 @@ def generate_dbml(sources: list[dict]) -> str:
         lines.append(f"    source: {source.get('id', '')}")
         lines.append(f"    description: {source.get('description', '')}")
         lines.append(f"    access_level: {source.get('access_level', '')}")
+
+        use_cases = source.get('use_cases', [])
+        if use_cases:
+            lines.append(f"    use_cases:")
+            for uc in use_cases:
+                # Escape apostrophes for DBML
+                uc_escaped = uc.replace("'", "\\'")
+                lines.append(f"      - {uc_escaped}")
+
+        constraints = source.get('constraints', [])
+        if constraints:
+            lines.append(f"    constraints:")
+            for c in constraints:
+                desc_escaped = c.get('description', '').replace("'", "\\'")
+                lines.append(f"      - {c.get('type', '')}: {desc_escaped}")
+
         lines.append(f"  '''")
         lines.append("}")
         lines.append("")

@@ -63,6 +63,41 @@ allowed_values:
     - has_one
     - has_many
 
+  semantic_type:
+    - entity_id
+    - uuid
+    - entity_name
+    - entity_description
+    - entity_summary
+    - entity_type
+    - entity_status
+    - date_start
+    - date_end
+    - date_published
+    - date_created
+    - date_modified
+    - duration
+    - time_relative
+    - person_name
+    - person_email
+    - institution
+    - location
+    - url_registration
+    - url_meeting
+    - url_external
+    - contact_info
+    - skill_level
+    - affiliation
+    - media_ref
+    - tags
+
+  constraint_type:
+    - privacy
+    - acceptable_use
+    - licensing
+    - retention
+    - regulatory
+
 field_properties:
   required:
     - name
@@ -76,3 +111,4 @@ field_properties:
     - computed
     - allowed_values
     - references
+    - semantic_type

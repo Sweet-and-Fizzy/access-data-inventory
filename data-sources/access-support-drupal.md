@@ -24,48 +24,61 @@ provides_data_for:
   - affinity_groups
   - tags
 
+use_cases:
+  - What content types are stored in the ACCESS Support CMS?
+  - When was a specific piece of content last modified?
+  - How many published nodes exist by content type?
+
 fields:
   - name: nid
     type: int
     access: Public
     primary_key: true
     description: Drupal node ID
+    semantic_type: entity_id
 
   - name: uuid
     type: varchar
     access: Public
     description: Drupal UUID
+    semantic_type: uuid
 
   - name: type
     type: varchar
     access: Public
     allowed_values: [announcement, event, eventseries, eventinstance, affinity_group, page, article]
     description: Drupal content type
+    semantic_type: entity_type
 
   - name: title
     type: varchar
     access: Public
     description: Content title
+    semantic_type: entity_name
 
   - name: body
     type: text
     access: Public
     description: Content body (HTML)
+    semantic_type: entity_description
 
   - name: status
     type: boolean
     access: Internal Only
     description: Published status
+    semantic_type: entity_status
 
   - name: created
     type: timestamp
     access: Public
     description: Content creation date
+    semantic_type: date_created
 
   - name: changed
     type: timestamp
     access: Public
     description: Last modification date
+    semantic_type: date_modified
 
   - name: uid
     type: int

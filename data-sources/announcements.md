@@ -32,18 +32,25 @@ mcp:
       method: DELETE
       description: Delete an announcement
 
+use_cases:
+  - What announcements have been published this week?
+  - Are there any announcements related to a specific affinity group?
+  - What resource provider updates have been shared recently?
+
 fields:
   - name: nid
     type: int
     access: Public
     primary_key: true
     description: Node ID
+    semantic_type: entity_id
 
   - name: uuid
     type: varchar
     access: Public
     mcp_name: uuid
     description: Unique identifier
+    semantic_type: uuid
 
   - name: title
     type: varchar
@@ -51,24 +58,28 @@ fields:
     required: true
     mcp_name: title
     description: Announcement title
+    semantic_type: entity_name
 
   - name: body
     type: text
     access: Public
     mcp_name: body
     description: HTML content
+    semantic_type: entity_description
 
   - name: summary
     type: varchar
     access: Public
     mcp_name: summary
     description: Short summary text
+    semantic_type: entity_summary
 
   - name: published_date
     type: date
     access: Public
     mcp_name: published_date
     description: When the announcement was published
+    semantic_type: date_published
 
   - name: affiliation
     type: varchar
@@ -76,12 +87,14 @@ fields:
     mcp_name: affiliation
     allowed_values: [ACCESS Collaboration, Community]
     description: Whether this is an official ACCESS or community announcement
+    semantic_type: affiliation
 
   - name: external_link
     type: varchar
     access: Public
     mcp_name: external_link
     description: Link to external resource
+    semantic_type: url_external
 
   - name: where_to_share
     type: text
@@ -101,6 +114,7 @@ fields:
     type: int
     access: Public
     description: Associated media image
+    semantic_type: media_ref
 
 relationships:
   - type: belongs_to

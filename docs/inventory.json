@@ -1,5 +1,5 @@
 {
-  "generated": "2026-02-06T14:52:02.449793",
+  "generated": "2026-02-13T13:34:55.150139",
   "source_count": 6,
   "sources": [
     {
@@ -27,19 +27,26 @@
         "affinity_groups",
         "tags"
       ],
+      "use_cases": [
+        "What content types are stored in the ACCESS Support CMS?",
+        "When was a specific piece of content last modified?",
+        "How many published nodes exist by content type?"
+      ],
       "fields": [
         {
           "name": "nid",
           "type": "int",
           "access": "Public",
           "primary_key": true,
-          "description": "Drupal node ID"
+          "description": "Drupal node ID",
+          "semantic_type": "entity_id"
         },
         {
           "name": "uuid",
           "type": "varchar",
           "access": "Public",
-          "description": "Drupal UUID"
+          "description": "Drupal UUID",
+          "semantic_type": "uuid"
         },
         {
           "name": "type",
@@ -54,37 +61,43 @@
             "page",
             "article"
           ],
-          "description": "Drupal content type"
+          "description": "Drupal content type",
+          "semantic_type": "entity_type"
         },
         {
           "name": "title",
           "type": "varchar",
           "access": "Public",
-          "description": "Content title"
+          "description": "Content title",
+          "semantic_type": "entity_name"
         },
         {
           "name": "body",
           "type": "text",
           "access": "Public",
-          "description": "Content body (HTML)"
+          "description": "Content body (HTML)",
+          "semantic_type": "entity_description"
         },
         {
           "name": "status",
           "type": "boolean",
           "access": "Internal Only",
-          "description": "Published status"
+          "description": "Published status",
+          "semantic_type": "entity_status"
         },
         {
           "name": "created",
           "type": "timestamp",
           "access": "Public",
-          "description": "Content creation date"
+          "description": "Content creation date",
+          "semantic_type": "date_created"
         },
         {
           "name": "changed",
           "type": "timestamp",
           "access": "Public",
-          "description": "Last modification date"
+          "description": "Last modification date",
+          "semantic_type": "date_modified"
         },
         {
           "name": "uid",
@@ -156,20 +169,34 @@
           }
         ]
       },
+      "use_cases": [
+        "Which affinity groups are available for a specific research domain?",
+        "Who coordinates a particular affinity group?",
+        "What events are associated with an affinity group?",
+        "How can I join or contact an affinity group?"
+      ],
+      "constraints": [
+        {
+          "type": "privacy",
+          "description": "Mailing lists, private group flags, and membership lists are restricted and must not be exposed through public APIs or AI tools."
+        }
+      ],
       "fields": [
         {
           "name": "nid",
           "type": "int",
           "access": "Public",
           "primary_key": true,
-          "description": "Node ID"
+          "description": "Node ID",
+          "semantic_type": "entity_id"
         },
         {
           "name": "uuid",
           "type": "varchar",
           "access": "Public",
           "mcp_name": "id",
-          "description": "Unique identifier"
+          "description": "Unique identifier",
+          "semantic_type": "uuid"
         },
         {
           "name": "title",
@@ -177,14 +204,16 @@
           "access": "Public",
           "required": true,
           "mcp_name": "name",
-          "description": "Group name"
+          "description": "Group name",
+          "semantic_type": "entity_name"
         },
         {
           "name": "body",
           "type": "text",
           "access": "Public",
           "mcp_name": "description",
-          "description": "Group description (HTML cleaned in MCP)"
+          "description": "Group description (HTML cleaned in MCP)",
+          "semantic_type": "entity_description"
         },
         {
           "name": "group_id",
@@ -192,7 +221,8 @@
           "access": "Public",
           "required": true,
           "mcp_name": "id",
-          "description": "URL-friendly group identifier"
+          "description": "URL-friendly group identifier",
+          "semantic_type": "entity_id"
         },
         {
           "name": "group_slug",
@@ -209,13 +239,15 @@
             "ACCESS_RP",
             "Community"
           ],
-          "description": "Whether this is an RP-specific or community group"
+          "description": "Whether this is an RP-specific or community group",
+          "semantic_type": "entity_type"
         },
         {
           "name": "goals",
           "type": "text",
           "access": "Public",
-          "description": "Group goals and objectives"
+          "description": "Group goals and objectives",
+          "semantic_type": "entity_summary"
         },
         {
           "name": "coordinator_id",
@@ -230,38 +262,44 @@
           "type": "varchar",
           "access": "Public",
           "mcp_name": "slack_link",
-          "description": "Link to Slack channel"
+          "description": "Link to Slack channel",
+          "semantic_type": "url_external"
         },
         {
           "name": "mailing_list",
           "type": "varchar",
           "access": "Restricted",
-          "description": "Internal mailing list address"
+          "description": "Internal mailing list address",
+          "semantic_type": "contact_info"
         },
         {
           "name": "external_email_list",
           "type": "varchar",
           "access": "Restricted",
-          "description": "External email list address"
+          "description": "External email list address",
+          "semantic_type": "contact_info"
         },
         {
           "name": "github_org",
           "type": "varchar",
           "access": "Public",
-          "description": "GitHub organization URL"
+          "description": "GitHub organization URL",
+          "semantic_type": "url_external"
         },
         {
           "name": "ask_ci_forum",
           "type": "varchar",
           "access": "Public",
           "mcp_name": "ask_ci_forum",
-          "description": "Link to Ask.CI forum topic"
+          "description": "Link to Ask.CI forum topic",
+          "semantic_type": "url_external"
         },
         {
           "name": "meeting_notes_link",
           "type": "varchar",
           "access": "Public",
-          "description": "Link to meeting notes document"
+          "description": "Link to meeting notes document",
+          "semantic_type": "url_external"
         },
         {
           "name": "is_private",
@@ -279,7 +317,8 @@
           "name": "image_id",
           "type": "int",
           "access": "Public",
-          "description": "Group logo/image"
+          "description": "Group logo/image",
+          "semantic_type": "media_ref"
         }
       ],
       "relationships": [
@@ -359,20 +398,27 @@
           }
         ]
       },
+      "use_cases": [
+        "What announcements have been published this week?",
+        "Are there any announcements related to a specific affinity group?",
+        "What resource provider updates have been shared recently?"
+      ],
       "fields": [
         {
           "name": "nid",
           "type": "int",
           "access": "Public",
           "primary_key": true,
-          "description": "Node ID"
+          "description": "Node ID",
+          "semantic_type": "entity_id"
         },
         {
           "name": "uuid",
           "type": "varchar",
           "access": "Public",
           "mcp_name": "uuid",
-          "description": "Unique identifier"
+          "description": "Unique identifier",
+          "semantic_type": "uuid"
         },
         {
           "name": "title",
@@ -380,28 +426,32 @@
           "access": "Public",
           "required": true,
           "mcp_name": "title",
-          "description": "Announcement title"
+          "description": "Announcement title",
+          "semantic_type": "entity_name"
         },
         {
           "name": "body",
           "type": "text",
           "access": "Public",
           "mcp_name": "body",
-          "description": "HTML content"
+          "description": "HTML content",
+          "semantic_type": "entity_description"
         },
         {
           "name": "summary",
           "type": "varchar",
           "access": "Public",
           "mcp_name": "summary",
-          "description": "Short summary text"
+          "description": "Short summary text",
+          "semantic_type": "entity_summary"
         },
         {
           "name": "published_date",
           "type": "date",
           "access": "Public",
           "mcp_name": "published_date",
-          "description": "When the announcement was published"
+          "description": "When the announcement was published",
+          "semantic_type": "date_published"
         },
         {
           "name": "affiliation",
@@ -412,14 +462,16 @@
             "ACCESS Collaboration",
             "Community"
           ],
-          "description": "Whether this is an official ACCESS or community announcement"
+          "description": "Whether this is an official ACCESS or community announcement",
+          "semantic_type": "affiliation"
         },
         {
           "name": "external_link",
           "type": "varchar",
           "access": "Public",
           "mcp_name": "external_link",
-          "description": "Link to external resource"
+          "description": "Link to external resource",
+          "semantic_type": "url_external"
         },
         {
           "name": "where_to_share",
@@ -446,7 +498,8 @@
           "name": "image_id",
           "type": "int",
           "access": "Public",
-          "description": "Associated media image"
+          "description": "Associated media image",
+          "semantic_type": "media_ref"
         }
       ],
       "relationships": [
@@ -483,37 +536,61 @@
         "tools": [],
         "notes": "Identity data is sensitive and not suitable for AI/MCP exposure"
       },
+      "use_cases": [
+        "How many unique users are registered in ACCESS?",
+        "Which institutions have the most ACCESS users?",
+        "Is a specific user affiliated with a particular institution?"
+      ],
+      "constraints": [
+        {
+          "type": "privacy",
+          "description": "Contains PII (names, emails, ACCESS IDs). Must not be exposed through public APIs, AI tools, or MCP servers."
+        },
+        {
+          "type": "acceptable_use",
+          "description": "Identity data may only be accessed by named individuals with legitimate need or systems with explicit authorization."
+        },
+        {
+          "type": "regulatory",
+          "description": "Subject to institutional data handling agreements and FERPA considerations for student researchers."
+        }
+      ],
       "fields": [
         {
           "name": "user_id",
           "type": "varchar",
           "access": "Sensitive",
           "primary_key": true,
-          "description": "Internal user identifier"
+          "description": "Internal user identifier",
+          "semantic_type": "entity_id"
         },
         {
           "name": "access_id",
           "type": "varchar",
           "access": "Sensitive",
-          "description": "ACCESS username (e.g., jsmith)"
+          "description": "ACCESS username (e.g., jsmith)",
+          "semantic_type": "entity_id"
         },
         {
           "name": "email",
           "type": "varchar",
           "access": "Sensitive",
-          "description": "User email address (PII)"
+          "description": "User email address (PII)",
+          "semantic_type": "person_email"
         },
         {
           "name": "name",
           "type": "varchar",
           "access": "Restricted",
-          "description": "User's display name"
+          "description": "User's display name",
+          "semantic_type": "person_name"
         },
         {
           "name": "institution",
           "type": "varchar",
           "access": "Restricted",
-          "description": "User's institutional affiliation"
+          "description": "User's institutional affiliation",
+          "semantic_type": "institution"
         }
       ],
       "relationships": [
@@ -548,13 +625,30 @@
         "tools": [],
         "notes": "Contains PII; partial coverage via events MCP"
       },
+      "use_cases": [
+        "How many people registered for a specific event?",
+        "What is the attendance rate for training sessions?",
+        "Which institutions are most represented at ACCESS events?",
+        "How do registrants hear about ACCESS events?"
+      ],
+      "constraints": [
+        {
+          "type": "privacy",
+          "description": "Contains PII (names, emails, ACCESS IDs). Must not be exposed through public APIs or AI tools."
+        },
+        {
+          "type": "acceptable_use",
+          "description": "Registration data may only be used for event management, reporting, and outreach effectiveness analysis. Individual-level data must not be shared outside authorized teams."
+        }
+      ],
       "fields": [
         {
           "name": "registration_id",
           "type": "varchar",
           "access": "Restricted",
           "primary_key": true,
-          "description": "Registration record ID"
+          "description": "Registration record ID",
+          "semantic_type": "entity_id"
         },
         {
           "name": "event_id",
@@ -574,7 +668,8 @@
           "name": "registration_date",
           "type": "timestamp",
           "access": "Restricted",
-          "description": "When the registration was submitted"
+          "description": "When the registration was submitted",
+          "semantic_type": "date_created"
         },
         {
           "name": "attendance_status",
@@ -586,7 +681,8 @@
             "no_show",
             "cancelled"
           ],
-          "description": "Registration and attendance status"
+          "description": "Registration and attendance status",
+          "semantic_type": "entity_status"
         },
         {
           "name": "referral_source",
@@ -598,25 +694,29 @@
           "name": "registrant_name",
           "type": "varchar",
           "access": "Sensitive",
-          "description": "Registrant's name (PII)"
+          "description": "Registrant's name (PII)",
+          "semantic_type": "person_name"
         },
         {
           "name": "registrant_email",
           "type": "varchar",
           "access": "Sensitive",
-          "description": "Registrant's email address (PII)"
+          "description": "Registrant's email address (PII)",
+          "semantic_type": "person_email"
         },
         {
           "name": "registrant_institution",
           "type": "varchar",
           "access": "Restricted",
-          "description": "Registrant's institutional affiliation"
+          "description": "Registrant's institutional affiliation",
+          "semantic_type": "institution"
         },
         {
           "name": "registrant_access_id",
           "type": "varchar",
           "access": "Sensitive",
-          "description": "Registrant's ACCESS ID (PII)"
+          "description": "Registrant's ACCESS ID (PII)",
+          "semantic_type": "entity_id"
         }
       ],
       "relationships": [
@@ -668,19 +768,27 @@
           }
         ]
       },
+      "use_cases": [
+        "What training sessions are available for beginners this month?",
+        "Which events are associated with a specific affinity group?",
+        "How many office hours are scheduled for next week?",
+        "What events require registration?"
+      ],
       "fields": [
         {
           "name": "id",
           "type": "int",
           "access": "Public",
           "primary_key": true,
-          "description": "Event ID"
+          "description": "Event ID",
+          "semantic_type": "entity_id"
         },
         {
           "name": "uuid",
           "type": "varchar",
           "access": "Public",
-          "description": "Unique identifier"
+          "description": "Unique identifier",
+          "semantic_type": "uuid"
         },
         {
           "name": "title",
@@ -688,14 +796,16 @@
           "access": "Public",
           "required": true,
           "mcp_name": "title",
-          "description": "Event title"
+          "description": "Event title",
+          "semantic_type": "entity_name"
         },
         {
           "name": "description",
           "type": "text",
           "access": "Public",
           "mcp_name": "description",
-          "description": "Event description"
+          "description": "Event description",
+          "semantic_type": "entity_description"
         },
         {
           "name": "event_type",
@@ -709,7 +819,8 @@
             "Office Hours",
             "Other"
           ],
-          "description": "Type of event"
+          "description": "Type of event",
+          "semantic_type": "entity_type"
         },
         {
           "name": "skill_level",
@@ -721,7 +832,8 @@
             "Intermediate",
             "Advanced"
           ],
-          "description": "Target skill level for attendees"
+          "description": "Target skill level for attendees",
+          "semantic_type": "skill_level"
         },
         {
           "name": "affiliation",
@@ -731,21 +843,24 @@
             "ACCESS Collaboration",
             "Community"
           ],
-          "description": "Whether this is an official ACCESS or community event"
+          "description": "Whether this is an official ACCESS or community event",
+          "semantic_type": "affiliation"
         },
         {
           "name": "start_date",
           "type": "timestamp",
           "access": "Public",
           "mcp_name": "start_date",
-          "description": "Event start date and time"
+          "description": "Event start date and time",
+          "semantic_type": "date_start"
         },
         {
           "name": "end_date",
           "type": "timestamp",
           "access": "Public",
           "mcp_name": "end_date",
-          "description": "Event end date and time"
+          "description": "Event end date and time",
+          "semantic_type": "date_end"
         },
         {
           "name": "duration_hours",
@@ -753,7 +868,8 @@
           "access": "Public",
           "computed": true,
           "mcp_name": "duration_hours",
-          "description": "Calculated duration in hours"
+          "description": "Calculated duration in hours",
+          "semantic_type": "duration"
         },
         {
           "name": "starts_in_hours",
@@ -761,40 +877,46 @@
           "access": "Public",
           "computed": true,
           "mcp_name": "starts_in_hours",
-          "description": "Hours until event starts (negative if past)"
+          "description": "Hours until event starts (negative if past)",
+          "semantic_type": "time_relative"
         },
         {
           "name": "location",
           "type": "varchar",
           "access": "Public",
-          "description": "Physical location if applicable"
+          "description": "Physical location if applicable",
+          "semantic_type": "location"
         },
         {
           "name": "virtual_meeting_link",
           "type": "varchar",
           "access": "Authenticated",
           "mcp_name": "virtual_meeting_link",
-          "description": "Zoom/Teams link - requires authentication"
+          "description": "Zoom/Teams link - requires authentication",
+          "semantic_type": "url_meeting"
         },
         {
           "name": "registration_url",
           "type": "varchar",
           "access": "Public",
           "mcp_name": "registration_url",
-          "description": "Link to register for the event"
+          "description": "Link to register for the event",
+          "semantic_type": "url_registration"
         },
         {
           "name": "contact",
           "type": "varchar",
           "access": "Public",
           "mcp_name": "contact",
-          "description": "Contact person or email"
+          "description": "Contact person or email",
+          "semantic_type": "contact_info"
         },
         {
           "name": "speakers",
           "type": "text",
           "access": "Public",
-          "description": "Speaker names and affiliations"
+          "description": "Speaker names and affiliations",
+          "semantic_type": "person_name"
         },
         {
           "name": "tags",
@@ -802,7 +924,8 @@
           "access": "Public",
           "computed": true,
           "mcp_name": "tags",
-          "description": "Parsed from comma-separated tag list"
+          "description": "Parsed from comma-separated tag list",
+          "semantic_type": "tags"
         },
         {
           "name": "affinity_group_id",

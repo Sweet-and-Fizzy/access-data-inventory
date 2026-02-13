@@ -26,18 +26,30 @@ mcp:
       method: GET
       description: Get events associated with a group
 
+use_cases:
+  - Which affinity groups are available for a specific research domain?
+  - Who coordinates a particular affinity group?
+  - What events are associated with an affinity group?
+  - How can I join or contact an affinity group?
+
+constraints:
+  - type: privacy
+    description: Mailing lists, private group flags, and membership lists are restricted and must not be exposed through public APIs or AI tools.
+
 fields:
   - name: nid
     type: int
     access: Public
     primary_key: true
     description: Node ID
+    semantic_type: entity_id
 
   - name: uuid
     type: varchar
     access: Public
     mcp_name: id
     description: Unique identifier
+    semantic_type: uuid
 
   - name: title
     type: varchar
@@ -45,12 +57,14 @@ fields:
     required: true
     mcp_name: name
     description: Group name
+    semantic_type: entity_name
 
   - name: body
     type: text
     access: Public
     mcp_name: description
     description: Group description (HTML cleaned in MCP)
+    semantic_type: entity_description
 
   - name: group_id
     type: varchar
@@ -58,6 +72,7 @@ fields:
     required: true
     mcp_name: id
     description: URL-friendly group identifier
+    semantic_type: entity_id
 
   - name: group_slug
     type: varchar
@@ -70,11 +85,13 @@ fields:
     mcp_name: category
     allowed_values: [ACCESS_RP, Community]
     description: Whether this is an RP-specific or community group
+    semantic_type: entity_type
 
   - name: goals
     type: text
     access: Public
     description: Group goals and objectives
+    semantic_type: entity_summary
 
   - name: coordinator_id
     type: int
@@ -88,32 +105,38 @@ fields:
     access: Public
     mcp_name: slack_link
     description: Link to Slack channel
+    semantic_type: url_external
 
   - name: mailing_list
     type: varchar
     access: Restricted
     description: Internal mailing list address
+    semantic_type: contact_info
 
   - name: external_email_list
     type: varchar
     access: Restricted
     description: External email list address
+    semantic_type: contact_info
 
   - name: github_org
     type: varchar
     access: Public
     description: GitHub organization URL
+    semantic_type: url_external
 
   - name: ask_ci_forum
     type: varchar
     access: Public
     mcp_name: ask_ci_forum
     description: Link to Ask.CI forum topic
+    semantic_type: url_external
 
   - name: meeting_notes_link
     type: varchar
     access: Public
     description: Link to meeting notes document
+    semantic_type: url_external
 
   - name: is_private
     type: boolean
@@ -129,6 +152,7 @@ fields:
     type: int
     access: Public
     description: Group logo/image
+    semantic_type: media_ref
 
 relationships:
   - type: has_one

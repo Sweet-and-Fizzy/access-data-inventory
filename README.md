@@ -80,12 +80,21 @@ mcp:
       method: GET
       description: Search with filters
 
+use_cases:
+  - What items are available for a given topic?
+  - How many items were created this month?
+
+constraints:
+  - type: privacy
+    description: Email fields contain PII and must not be exposed publicly.
+
 fields:
   - name: id
     type: int
     access: Public
     primary_key: true
     description: Unique identifier
+    semantic_type: entity_id
 
   - name: title
     type: varchar
@@ -93,6 +102,7 @@ fields:
     required: true
     mcp_name: title
     description: Display title
+    semantic_type: entity_name
 
   - name: internal_notes
     type: text
@@ -135,6 +145,7 @@ Detailed description of this data source.
 | `computed` | No | Set `true` if calculated/derived |
 | `references` | No | Foreign key reference (e.g., `users.user_id`) |
 | `allowed_values` | No | List of valid values |
+| `semantic_type` | No | Controlled vocabulary tag for cross-source field matching (see [Semantic Types](#semantic-types)) |
 
 ### Allowed Values
 
@@ -146,23 +157,89 @@ Detailed description of this data source.
 
 **priority:** High, Medium, Low
 
+### Use Cases
+
+The `use_cases` property is an optional list of plain-language questions that a data source can help answer. These appear in the field dictionary and help stakeholders understand the practical value of each data source.
+
+```yaml
+use_cases:
+  - What training sessions are available for beginners this month?
+  - Which events are associated with a specific affinity group?
+```
+
+### Constraints
+
+The `constraints` property documents policy, privacy, or regulatory restrictions on a data source. Each constraint has a `type` (from the controlled vocabulary below) and a free-text `description`.
+
+```yaml
+constraints:
+  - type: privacy
+    description: Contains PII that must not be exposed through public APIs.
+  - type: acceptable_use
+    description: Data may only be used for event management and reporting.
+```
+
+**constraint_type:** privacy, acceptable_use, licensing, retention, regulatory
+
+### Semantic Types
+
+The `semantic_type` property is an optional tag on individual fields that links equivalent fields across different data sources. For example, `title` in events, `title` in announcements, and `title` in Drupal nodes all serve the same purpose — `entity_name` captures that relationship.
+
+```yaml
+fields:
+  - name: title
+    type: varchar
+    access: Public
+    description: Event title
+    semantic_type: entity_name
+```
+
+Fields that are foreign key references (with a `references` property) should generally NOT have a `semantic_type` — the relationship is already captured by the reference.
+
+**semantic_type vocabulary:**
+
+| Type | Covers fields like | Purpose |
+|------|-------------------|---------|
+| `entity_id` | id, nid, user_id | Primary/business identifier |
+| `uuid` | uuid | Universal unique identifier |
+| `entity_name` | title, name (of a thing) | Human-readable name/title |
+| `entity_description` | description, body | Full descriptive content |
+| `entity_summary` | summary, goals | Short-form summary |
+| `entity_type` | event_type, type, category | Classification |
+| `entity_status` | status, attendance_status | Lifecycle state |
+| `date_start` / `date_end` | start_date, end_date | Time bounds |
+| `date_published` | published_date | Publication timestamp |
+| `date_created` / `date_modified` | created, changed | Record timestamps |
+| `duration` / `time_relative` | duration_hours, starts_in_hours | Time measurements |
+| `person_name` / `person_email` | name (of a person), email | PII fields |
+| `institution` | institution | Org affiliation |
+| `location` | location | Physical location |
+| `url_registration` / `url_meeting` / `url_external` | registration_url, virtual_meeting_link | URL types |
+| `contact_info` | contact, mailing_list | Contact details |
+| `skill_level` | skill_level | Target audience level |
+| `affiliation` | affiliation | ACCESS vs community |
+| `media_ref` | image_id | Media references |
+| `tags` | tags | Taxonomy tags |
+
+This vocabulary is provisional and will evolve as more data sources are added. Adding, renaming, or removing types only requires editing the list in `schema.yaml`.
+
 ## Local Development
 
 ```bash
-# Install dependencies (first time)
+# First time setup
 npm install
+cd docs && bundle install && cd ..
 
-# Generate docs locally
-python generate.py
+# Generate + preview (recommended)
+npm run preview
+# Then open http://localhost:8080
+
+# Or, step by step:
+python generate.py              # Generate docs
+npm run serve                   # Start Jekyll dev server
 
 # Validate without generating
 python generate.py --validate
-
-# Preview locally (then open http://localhost:8080)
-cd docs && python -m http.server 8080
-
-# Deploy to dbdocs manually
-npm run dbdocs:build
 ```
 
 ## Project Structure
