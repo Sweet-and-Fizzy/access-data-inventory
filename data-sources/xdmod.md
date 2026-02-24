@@ -3,8 +3,8 @@ id: xdmod
 name: XDMoD Metrics
 description: HPC metrics, usage analytics, and resource specifications from the ACCESS XDMoD instance
 category: Metrics & Reporting
-track: Operations
-responsible_team: Operations
+track: Metrics
+responsible_team: Metrics
 access_level: Varies
 is_canonical: true
 api_endpoint: https://xdmod.access-ci.org/controllers/user_interface.php
@@ -26,13 +26,33 @@ mcp:
       description: Get filter values for a dimension (e.g., all resources, institutions)
     - name: get_chart_data
       method: POST
-      description: Get chart data and metadata for a statistic
+      description: Get chart data and metadata for a statistic with optional filters
     - name: get_chart_image
       method: POST
       description: Get chart as SVG, PNG, or PDF image
     - name: get_chart_link
       method: GET
       description: Generate a URL to the interactive XDMoD portal chart
+
+mcp_authenticated:
+  available: true
+  package: "@access-mcp/xdmod-data"
+  notes: Authenticated access via XDMoD API token (xdmod-data Python package). Required for per-user data queries.
+  tools:
+    - name: get_user_data
+      description: Get user-specific usage data by exact user identifier
+    - name: get_raw_data
+      description: Extract XDMoD metrics with complex filtering, timeseries/aggregate modes
+    - name: describe_fields
+      description: Discover dimensions and metrics in a specific realm
+    - name: describe_realms
+      description: List all available XDMoD data realms with capabilities
+    - name: get_smart_filters
+      description: Discover filter values for use with get_raw_data (resources, queues, institutions)
+    - name: get_analysis_template
+      description: Get pre-configured analysis patterns (14 templates for common scenarios)
+    - name: integrate_nsf_xdmod
+      description: Correlate NSF funding data with XDMoD computational usage patterns
 
 use_cases:
   - How much CPU time was used across ACCESS last quarter?
@@ -393,9 +413,9 @@ notes:
 
 XDMoD (XD Metrics on Demand) provides comprehensive metrics on ACCESS cyberinfrastructure usage. It covers 9 realms of data from job accounting (Jobs), detailed performance monitoring (SUPREMM), cloud compute (Cloud), gateway usage (Gateways), allocation tracking (Allocations), user accounts (Accounts), allocation requests (Requests), resource hardware specifications (ResourceSpecifications), and storage (Storage).
 
-The MCP server provides two tiers:
-- **@access-mcp/xdmod** (TypeScript) — Public aggregate data via `public_user=true`. No auth required. Discovery tools + chart tools.
-- **@access-mcp/xdmod-data** (Python) — Authenticated per-user data via XDMoD API tokens. Requires `XDMOD_API_TOKEN`.
+Two MCP servers provide access at different tiers:
+- **@access-mcp/xdmod** (TypeScript, 6 tools) — Public aggregate data via `public_user=true`. No auth required. Discovery, chart data, chart images, and portal links.
+- **@access-mcp/xdmod-data** (Python, 7 tools) — Authenticated access via XDMoD API tokens. Per-user data, complex filtering, analysis templates, and NSF funding integration. Requires `XDMOD_API_TOKEN`.
 
 ## Notes
 

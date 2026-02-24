@@ -1,5 +1,5 @@
 // ACCESS Data Inventory
-// Generated: 2026-02-13 18:43
+// Generated: 2026-02-24 17:53
 // Source: data-sources/*.md
 
 // =============================================================================
@@ -94,6 +94,21 @@ Enum data_source {
     mcp_available: true
     mcp_package: @access-mcp/events
     api_endpoint: https://support.access-ci.org/api/2.2/events
+    priority: High
+  ''']
+
+  xdmod [note: '''
+    name: XDMoD Metrics
+    description: HPC metrics, usage analytics, and resource specifications from the ACCESS XDMoD instance
+    category: Metrics & Reporting
+    track: Metrics
+    responsible_team: Metrics
+    access_level: Varies
+    is_canonical: true
+    canonical_source: null
+    mcp_available: true
+    mcp_package: @access-mcp/xdmod
+    api_endpoint: https://xdmod.access-ci.org/controllers/user_interface.php
     priority: High
   ''']
 

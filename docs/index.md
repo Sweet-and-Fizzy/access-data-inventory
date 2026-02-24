@@ -19,6 +19,12 @@ The ACCESS ecosystem spans dozens of data sources across multiple teams and trac
 
 ## Data Sources
 
+### Metrics
+
+| Source | Description | Access | |
+|--------|-------------|--------|---|
+| [XDMoD Metrics](field-dictionary#xdmod) | HPC metrics, usage analytics, and resource specifications from the ACCESS XDMoD instance | Varies | [MCP](https://access-mcp.netlify.app/servers/xdmod) · [API](https://xdmod.access-ci.org/controllers/user_interface.php) |
+
 ### Operations
 
 | Source | Description | Access | |

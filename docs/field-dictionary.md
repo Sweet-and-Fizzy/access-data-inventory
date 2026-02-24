@@ -15,6 +15,7 @@ Field-level documentation for all ACCESS data sources.
 - [COManage/ACCESS Identity](#comanage)
 - [Event Registrations](#event_registrations)
 - [Events and Training](#events)
+- [XDMoD Metrics](#xdmod)
 
 <h2 id="access_support_drupal">ACCESS Support Drupal</h2>
 
@@ -239,3 +240,20 @@ Field-level documentation for all ACCESS data sources.
 - **Belongs To** `affinity_groups`: Events can be associated with an affinity group
 - **Has Many** `tags`: Events are tagged for discovery
 - **Has Many** `event_registrations`: Registration records for this event
+
+<h2 id="xdmod">XDMoD Metrics</h2>
+
+*HPC metrics, usage analytics, and resource specifications from the ACCESS XDMoD instance*
+
+**Example questions this data can answer:**
+
+- How much CPU time was used across ACCESS last quarter?
+- Which resources have the highest GPU utilization?
+- How many jobs ran on Delta in January 2024?
+- What science gateways are most active?
+- How are allocations distributed across fields of science?
+- What is the total GPU capacity across ACCESS resources?
+- Show me wait times by resource for the past month
+- How many active users and PIs are there?
+
+*No fields documented.*

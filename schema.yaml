@@ -28,6 +28,7 @@ allowed_values:
     - Operations
     - Allocations
     - ACO
+    - Metrics
 
   access_level:
     - Public
