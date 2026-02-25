@@ -1,5 +1,5 @@
 // ACCESS Data Inventory
-// Generated: 2026-02-24 22:55
+// Generated: 2026-02-24 19:16
 // Source: data-sources/*.md
 
 // =============================================================================
@@ -110,6 +110,7 @@ Enum data_source {
     mcp_package: @access-mcp/xdmod
     api_endpoint: https://xdmod.access-ci.org/controllers/user_interface.php
     priority: High
+    realms: Accounts (2 stats, 2 dims), Allocations (11 stats, 9 dims), Cloud (11 stats, 23 dims), Gateways (28 stats, 23 dims), Jobs (30 stats, 24 dims), Requests (2 stats, 3 dims), ResourceSpecifications (18 stats, 4 dims), Storage (6 stats, 0 dims), SUPREMM (33 stats, 30 dims)
   ''']
 
 }
@@ -276,6 +277,364 @@ Table events {
       - Which events are associated with a specific affinity group?
       - How many office hours are scheduled for next week?
       - What events require registration?
+  '''
+}
+
+Table xdmod_accounts {
+  resource dimension [note: 'filter dimension']
+  resource_type dimension [note: 'filter dimension']
+  unique_account_count metric [note: 'Number of Accounts Created']
+  unique_account_with_jobs_count metric [note: 'Number of Accounts Created with Jobs']
+
+  Note: '''
+    source: xdmod
+    realm: Accounts
+    description: ACCESS user account tracking — accounts associated with allocations and job activity
+    access_level: Public
+    type: XDMoD realm (dimensions are query filters, statistics are computed metrics)
+  '''
+}
+
+Table xdmod_allocations {
+  allocation dimension [note: 'filter dimension']
+  allocation_type dimension [note: 'filter dimension']
+  board_type dimension [note: 'filter dimension']
+  fieldofscience dimension [note: 'filter dimension']
+  nsfdirectorate dimension [note: 'filter dimension']
+  pi dimension [note: 'filter dimension']
+  parentscience dimension [note: 'filter dimension']
+  resource dimension [note: 'filter dimension']
+  resource_type dimension [note: 'filter dimension']
+  active_allocation_count metric [note: 'Number of Projects Active']
+  active_pi_count metric [note: 'Number of PIs Active']
+  active_resallocation_count metric [note: 'Number of Allocations Active']
+  allocated_nu metric [note: 'NUs Allocated']
+  allocated_raw_su metric [note: 'CPU Core Hours Allocated']
+  allocated_su metric [note: 'XD SUs Allocated']
+  allocated_ace metric [note: 'ACCESS Credit Equivalents Allocated (SU)']
+  rate_of_usage metric [note: 'Allocation Usage Rate (XD SU/Hour)']
+  rate_of_usage_ace metric [note: 'Allocation Usage Rate ACEs (SU/Hour)']
+  used_su metric [note: 'XD SUs Used']
+  used_ace metric [note: 'ACCESS Credit Equivalents Used (SU)']
+
+  Note: '''
+    source: xdmod
+    realm: Allocations
+    description: Allocation and project tracking — active allocations, PIs, and resource usage in SUs/ACEs
+    access_level: Public
+    type: XDMoD realm (dimensions are query filters, statistics are computed metrics)
+  '''
+}
+
+Table xdmod_cloud {
+  configuration dimension [note: 'filter dimension']
+  domain dimension [note: 'filter dimension']
+  instance_type dimension [note: 'filter dimension']
+  person dimension [note: 'filter dimension']
+  pi dimension [note: 'filter dimension']
+  project dimension [note: 'filter dimension']
+  provider dimension [note: 'filter dimension']
+  resource dimension [note: 'filter dimension']
+  resource_type dimension [note: 'filter dimension']
+  submission_venue dimension [note: 'filter dimension']
+  instance_state dimension [note: 'filter dimension']
+  institution dimension [note: 'filter dimension']
+  institution_country dimension [note: 'filter dimension']
+  institution_state dimension [note: 'filter dimension']
+  nsfdirectorate dimension [note: 'filter dimension']
+  parentscience dimension [note: 'filter dimension']
+  fieldofscience dimension [note: 'filter dimension']
+  pi_institution dimension [note: 'filter dimension']
+  pi_institution_country dimension [note: 'filter dimension']
+  pi_institution_state dimension [note: 'filter dimension']
+  vm_size dimension [note: 'filter dimension']
+  vm_size_cpu dimension [note: 'filter dimension']
+  vm_size_memory dimension [note: 'filter dimension']
+  cloud_num_sessions_ended metric [note: 'Number of Sessions Ended']
+  cloud_num_sessions_started metric [note: 'Number of Sessions Started']
+  cloud_num_sessions_running metric [note: 'Number of Sessions Active']
+  cloud_wall_time metric [note: 'Wall Hours Total']
+  cloud_core_time metric [note: 'CPU Hours Total']
+  cloud_avg_wallduration_hours metric [note: 'Wall Hours Per Session']
+  cloud_avg_cores_reserved metric [note: 'Average Cores Reserved Weighted By Wall Hours']
+  cloud_avg_memory_reserved metric [note: 'Average Memory Reserved Weighted By Wall Hours (Bytes)']
+  cloud_avg_rv_storage_reserved metric [note: 'Average Root Volume Storage Reserved (Bytes)']
+  cloud_core_utilization metric [note: 'Core Hour Utilization (%)']
+  gateway_session_count metric [note: 'Number of Sessions Ended via Gateway']
+
+  Note: '''
+    source: xdmod
+    realm: Cloud
+    description: Cloud and virtualized compute environment metrics
+    access_level: Public
+    type: XDMoD realm (dimensions are query filters, statistics are computed metrics)
+  '''
+}
+
+Table xdmod_gateways {
+  allocation dimension [note: 'filter dimension']
+  fieldofscience dimension [note: 'filter dimension']
+  gateway dimension [note: 'filter dimension']
+  gateway_user dimension [note: 'filter dimension']
+  grant_type dimension [note: 'filter dimension']
+  jobsize dimension [note: 'filter dimension']
+  jobwaittime dimension [note: 'filter dimension']
+  jobwalltime dimension [note: 'filter dimension']
+  nsfdirectorate dimension [note: 'filter dimension']
+  nodecount dimension [note: 'filter dimension']
+  pi dimension [note: 'filter dimension']
+  pi_institution dimension [note: 'filter dimension']
+  pi_institution_country dimension [note: 'filter dimension']
+  pi_institution_state dimension [note: 'filter dimension']
+  parentscience dimension [note: 'filter dimension']
+  queue dimension [note: 'filter dimension']
+  resource dimension [note: 'filter dimension']
+  resource_type dimension [note: 'filter dimension']
+  provider dimension [note: 'filter dimension']
+  person dimension [note: 'filter dimension']
+  institution dimension [note: 'filter dimension']
+  institution_country dimension [note: 'filter dimension']
+  institution_state dimension [note: 'filter dimension']
+  job_count metric [note: 'Number of Jobs Ended']
+  running_job_count metric [note: 'Number of Jobs Running']
+  started_job_count metric [note: 'Number of Jobs Started']
+  submitted_job_count metric [note: 'Number of Jobs Submitted']
+  total_cpu_hours metric [note: 'CPU Hours Total']
+  total_node_hours metric [note: 'Node Hours Total']
+  total_wallduration_hours metric [note: 'Wall Hours Total']
+  total_waitduration_hours metric [note: 'Wait Hours Total']
+  avg_cpu_hours metric [note: 'CPU Hours Per Job']
+  avg_node_hours metric [note: 'Node Hours Per Job']
+  avg_wallduration_hours metric [note: 'Wall Hours Per Job']
+  avg_waitduration_hours metric [note: 'Wait Hours Per Job']
+  avg_processors metric [note: 'Job Size Per Job (Core Count)']
+  max_processors metric [note: 'Job Size Max (Core Count)']
+  min_processors metric [note: 'Job Size Min (Core Count)']
+  normalized_avg_processors metric [note: 'Job Size Normalized (% of Total Cores)']
+  total_su metric [note: 'XD SUs Charged Total']
+  avg_su metric [note: 'XD SUs Charged Per Job']
+  total_nu metric [note: 'NUs Charged Total']
+  avg_nu metric [note: 'NUs Charged Per Job']
+  total_ace metric [note: 'ACCESS Credit Equivalents Charged Total (SU)']
+  avg_ace metric [note: 'ACCESS Credit Equivalents Charged Per Job (SU)']
+  expansion_factor metric [note: 'User Expansion Factor']
+  utilization metric [note: 'ACCESS CPU Utilization (%)']
+  active_resource_count metric [note: 'Number of Resources Active']
+  active_institution_count metric [note: 'Number of Institutions Active']
+  active_gateway_count metric [note: 'Number of Gateways Active']
+  active_gwuser_count metric [note: 'Number of Gateway Users Active']
+
+  Note: '''
+    source: xdmod
+    realm: Gateways
+    description: Science gateway job metrics — jobs submitted through ACCESS gateways
+    access_level: Public
+    type: XDMoD realm (dimensions are query filters, statistics are computed metrics)
+  '''
+}
+
+Table xdmod_jobs {
+  allocation dimension [note: 'filter dimension']
+  fieldofscience dimension [note: 'filter dimension']
+  grant_type dimension [note: 'filter dimension']
+  jobsize dimension [note: 'filter dimension']
+  jobwaittime dimension [note: 'filter dimension']
+  jobwalltime dimension [note: 'filter dimension']
+  nsfdirectorate dimension [note: 'filter dimension']
+  nodecount dimension [note: 'filter dimension']
+  pi dimension [note: 'filter dimension']
+  pi_institution dimension [note: 'filter dimension']
+  pi_institution_country dimension [note: 'filter dimension']
+  pi_institution_state dimension [note: 'filter dimension']
+  parentscience dimension [note: 'filter dimension']
+  queue dimension [note: 'filter dimension']
+  resource dimension [note: 'filter dimension']
+  resource_type dimension [note: 'filter dimension']
+  provider dimension [note: 'filter dimension']
+  person dimension [note: 'filter dimension']
+  institution dimension [note: 'filter dimension']
+  institution_country dimension [note: 'filter dimension']
+  institution_state dimension [note: 'filter dimension']
+  username dimension [note: 'filter dimension']
+  qos dimension [note: 'filter dimension']
+  application dimension [note: 'filter dimension']
+  job_count metric [note: 'Number of Jobs Ended']
+  running_job_count metric [note: 'Number of Jobs Running']
+  started_job_count metric [note: 'Number of Jobs Started']
+  submitted_job_count metric [note: 'Number of Jobs Submitted']
+  total_cpu_hours metric [note: 'CPU Hours Total']
+  total_node_hours metric [note: 'Node Hours Total']
+  total_wallduration_hours metric [note: 'Wall Hours Total']
+  total_waitduration_hours metric [note: 'Wait Hours Total']
+  avg_cpu_hours metric [note: 'CPU Hours Per Job']
+  avg_node_hours metric [note: 'Node Hours Per Job']
+  avg_wallduration_hours metric [note: 'Wall Hours Per Job']
+  avg_waitduration_hours metric [note: 'Wait Hours Per Job']
+  avg_processors metric [note: 'Job Size Per Job (Core Count)']
+  max_processors metric [note: 'Job Size Max (Core Count)']
+  min_processors metric [note: 'Job Size Min (Core Count)']
+  normalized_avg_processors metric [note: 'Job Size Normalized (% of Total Cores)']
+  total_su metric [note: 'XD SUs Charged Total']
+  avg_su metric [note: 'XD SUs Charged Per Job']
+  total_nu metric [note: 'NUs Charged Total']
+  avg_nu metric [note: 'NUs Charged Per Job']
+  total_ace metric [note: 'ACCESS Credit Equivalents Charged Total (SU)']
+  avg_ace metric [note: 'ACCESS Credit Equivalents Charged Per Job (SU)']
+  expansion_factor metric [note: 'User Expansion Factor']
+  utilization metric [note: 'ACCESS CPU Utilization (%)']
+  gateway_job_count metric [note: 'Number of Jobs via Gateway']
+  active_person_count metric [note: 'Number of Users Active']
+  active_pi_count metric [note: 'Number of PIs Active']
+  active_resource_count metric [note: 'Number of Resources Active']
+  active_allocation_count metric [note: 'Number of Allocations Active']
+  active_institution_count metric [note: 'Number of Institutions Active']
+
+  Note: '''
+    source: xdmod
+    realm: Jobs
+    description: Job accounting and resource usage metrics from job schedulers
+    access_level: Public
+    type: XDMoD realm (dimensions are query filters, statistics are computed metrics)
+  '''
+}
+
+Table xdmod_requests {
+  fieldofscience dimension [note: 'filter dimension']
+  nsfdirectorate dimension [note: 'filter dimension']
+  parentscience dimension [note: 'filter dimension']
+  request_count metric [note: 'Number of Proposals']
+  project_count metric [note: 'Number of Projects']
+
+  Note: '''
+    source: xdmod
+    realm: Requests
+    description: Allocation request and proposal tracking
+    access_level: Public
+    type: XDMoD realm (dimensions are query filters, statistics are computed metrics)
+  '''
+}
+
+Table xdmod_resourcespecifications {
+  resource dimension [note: 'filter dimension']
+  resource_institution_country dimension [note: 'filter dimension']
+  resource_institution_state dimension [note: 'filter dimension']
+  resource_type dimension [note: 'filter dimension']
+  total_cpu_core_hours metric [note: 'CPU Hours Total']
+  allocated_cpu_core_hours metric [note: 'CPU Hours Allocated']
+  total_gpu_hours metric [note: 'GPU Hours Total']
+  allocated_gpu_hours metric [note: 'GPU Hours Allocated']
+  total_gpu_node_hours metric [note: 'GPU Node Hours Total']
+  allocated_gpu_node_hours metric [note: 'GPU Node Hours Allocated']
+  total_cpu_node_hours metric [note: 'CPU Node Hours Total']
+  allocated_cpu_node_hours metric [note: 'CPU Node Hours Allocated']
+  total_avg_number_of_cpu_cores metric [note: 'Average Number of CPU Cores Total']
+  allocated_avg_number_of_cpu_cores metric [note: 'Average Number of CPU Cores Allocated']
+  total_avg_number_of_gpus metric [note: 'Average Number of GPUs Total']
+  allocated_avg_number_of_gpus metric [note: 'Average Number of GPUs Allocated']
+  total_avg_number_of_cpu_nodes metric [note: 'Average Number of CPU Nodes Total']
+  allocated_avg_number_of_cpu_nodes metric [note: 'Average Number of CPU Nodes Allocated']
+  total_avg_number_of_gpu_nodes metric [note: 'Average Number of GPU Nodes Total']
+  allocated_avg_number_of_gpu_nodes metric [note: 'Average Number of GPU Nodes Allocated']
+  ace_total metric [note: 'ACCESS Credit Equivalents Available Total (SU)']
+  ace_allocated metric [note: 'ACCESS Credit Equivalents Available Allocated (SU)']
+
+  Note: '''
+    source: xdmod
+    realm: ResourceSpecifications
+    description: Resource hardware specifications — CPU/GPU counts, node hours, and capacity metrics
+    access_level: Public
+    type: XDMoD realm (dimensions are query filters, statistics are computed metrics)
+  '''
+}
+
+Table xdmod_storage {
+  user_count metric [note: 'User Count']
+  avg_physical_usage metric [note: 'Physical Usage (Bytes)']
+  avg_logical_usage metric [note: 'Logical Usage (Bytes)']
+  avg_file_count metric [note: 'File Count']
+  avg_hard_threshold metric [note: 'Quota Hard Threshold (Bytes)']
+  avg_soft_threshold metric [note: 'Quota Soft Threshold (Bytes)']
+
+  Note: '''
+    source: xdmod
+    realm: Storage
+    description: File system and storage usage metrics
+    access_level: Public
+    type: XDMoD realm (dimensions are query filters, statistics are computed metrics)
+  '''
+}
+
+Table xdmod_supremm {
+  resource dimension [note: 'filter dimension']
+  person dimension [note: 'filter dimension']
+  pi dimension [note: 'filter dimension']
+  institution dimension [note: 'filter dimension']
+  jobsize dimension [note: 'filter dimension']
+  queue dimension [note: 'filter dimension']
+  fieldofscience dimension [note: 'filter dimension']
+  nsfdirectorate dimension [note: 'filter dimension']
+  parentscience dimension [note: 'filter dimension']
+  application dimension [note: 'filter dimension']
+  cpi dimension [note: 'filter dimension']
+  cpu dimension [note: 'filter dimension']
+  cpucv dimension [note: 'filter dimension']
+  cpuuser dimension [note: 'filter dimension']
+  datasource dimension [note: 'filter dimension']
+  exit_status dimension [note: 'filter dimension']
+  gpu_count dimension [note: 'filter dimension']
+  granted_pe dimension [note: 'filter dimension']
+  ibrxbyterate dimension [note: 'filter dimension']
+  jobwalltime dimension [note: 'filter dimension']
+  max_mem dimension [note: 'filter dimension']
+  mem_used dimension [note: 'filter dimension']
+  nodecount dimension [note: 'filter dimension']
+  pi_institution dimension [note: 'filter dimension']
+  provider dimension [note: 'filter dimension']
+  resource_type dimension [note: 'filter dimension']
+  shared dimension [note: 'filter dimension']
+  username dimension [note: 'filter dimension']
+  institution_country dimension [note: 'filter dimension']
+  institution_state dimension [note: 'filter dimension']
+  job_count metric [note: 'Number of Jobs Ended']
+  short_job_count metric [note: 'Number of Short Jobs Ended']
+  running_job_count metric [note: 'Number of Jobs Running']
+  started_job_count metric [note: 'Number of Jobs Started']
+  submitted_job_count metric [note: 'Number of Jobs Submitted']
+  wall_time metric [note: 'CPU Hours Total']
+  wall_time_per_job metric [note: 'Wall Hours Per Job']
+  wait_time metric [note: 'Wait Hours Total']
+  wait_time_per_job metric [note: 'Wait Hours Per Job']
+  requested_wall_time metric [note: 'Wall Hours Requested Total']
+  requested_wall_time_per_job metric [note: 'Wall Hours Requested Per Job']
+  wall_time_accuracy metric [note: 'Wall Time Accuracy (%)']
+  cpu_time_user metric [note: 'CPU Hours User Total']
+  cpu_time_system metric [note: 'CPU Hours System Total']
+  cpu_time_idle metric [note: 'CPU Hours Idle Total']
+  avg_percent_cpu_user metric [note: 'Avg CPU % User weighted by core-hour']
+  avg_percent_cpu_system metric [note: 'Avg CPU % System weighted by core-hour']
+  avg_percent_cpu_idle metric [note: 'Avg CPU % Idle weighted by core-hour']
+  gpu_time metric [note: 'GPU Hours Total']
+  avg_percent_gpu_usage metric [note: 'Avg GPU usage weighted by GPU hour (%)']
+  avg_flops_per_core metric [note: 'Avg FLOPS Per Core weighted by core-hour (ops/s)']
+  avg_memory_per_core metric [note: 'Avg Memory Per Core weighted by core-hour (bytes)']
+  avg_total_memory_per_core metric [note: 'Avg Total Memory Per Core weighted by core-hour (bytes)']
+  avg_max_memory_per_core metric [note: 'Avg Max Memory weighted by core-hour (%)']
+  avg_mem_bw_per_core metric [note: 'Avg Memory Bandwidth Per Core weighted by core-hour (bytes/s)']
+  avg_ib_rx_bytes metric [note: 'Avg InfiniBand rate Per Node weighted by node-hour (bytes/s)']
+  avg_homogeneity metric [note: 'Avg Homogeneity weighted by node-hour (%)']
+  total_su metric [note: 'XD SUs Charged Total']
+  avg_su metric [note: 'XD SUs Charged Per Job']
+  total_ace metric [note: 'ACCESS Credit Equivalents Charged Total (SU)']
+  avg_ace metric [note: 'ACCESS Credit Equivalents Charged Per Job (SU)']
+  active_pi_count metric [note: 'Number of PIs Active']
+  active_app_count metric [note: 'Number of Applications Active']
+
+  Note: '''
+    source: xdmod
+    realm: SUPREMM
+    description: Detailed job performance analytics — CPU, GPU, memory, network, and I/O metrics from monitoring
+    access_level: Public
+    type: XDMoD realm (dimensions are query filters, statistics are computed metrics)
   '''
 }
 

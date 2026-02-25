@@ -588,7 +588,8 @@
           canonical_source: source.canonical_source ? source.canonical_source.replace(/-/g, '_') : null,
           provides_data_for: source.provides_data_for || [],
           fields: source.fields || [],
-          relationships: source.relationships || []
+          relationships: source.relationships || [],
+          realms: source.realms || []
         });
 
         // Add MCP node if available
@@ -924,6 +925,37 @@
             extraHTML += `<div class="rel-list">
               <h4>Relationships</h4>
               ${relHTML}
+            </div>`;
+          }
+        }
+
+        // Realm card for XDMoD-style sources
+        if (data.type === 'data_source' && data.realms && data.realms.length > 0) {
+          for (const realm of data.realms) {
+            const dims = (realm.dimensions || []).filter(d => d !== 'none');
+            const stats = realm.statistics || [];
+
+            let statsHTML = stats.map(s =>
+              `<div class="field-row">
+                <span class="field-name">${s.name}</span>
+                <span class="field-type">metric</span>
+                <span class="field-access public">${realm.access_level || ''}</span>
+              </div>`
+            ).join('');
+
+            let dimsNote = dims.length > 0
+              ? `<div style="padding: 6px 10px; font-size: 0.75rem; color: var(--access-gray); border-bottom: 1px solid #eee;">
+                   <strong>Dimensions:</strong> ${dims.join(', ')}
+                 </div>`
+              : '';
+
+            extraHTML += `<div class="field-card">
+              <div class="field-card-header">
+                <span>${realm.name} (${stats.length} statistics)</span>
+                <a href="field-dictionary#xdmod">View full details</a>
+              </div>
+              ${dimsNote}
+              <div class="field-card-body">${statsHTML}</div>
             </div>`;
           }
         }

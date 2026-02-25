@@ -262,10 +262,46 @@ def generate_field_dictionary(sources: list[dict]) -> str:
                 lines.append(f"- **{ctype}:** {c.get('description', '')}")
             lines.append("")
 
+        realms = source.get('realms', [])
+        if realms:
+            lines.append("### Realms")
+            lines.append("")
+            lines.append(f"XDMoD organizes data into **{len(realms)} realms**, each with its own dimensions and statistics.")
+            lines.append("")
+            for realm in realms:
+                realm_name = realm.get('name', '')
+                lines.append(f"#### {realm_name}")
+                lines.append("")
+                lines.append(f"*{realm.get('description', '')}*")
+                lines.append("")
+                # Access level
+                access = realm.get('access_level', '')
+                if access:
+                    lines.append(f"**Access:** {access}")
+                    lines.append("")
+                # Dimensions
+                dims = realm.get('dimensions', [])
+                if dims:
+                    dim_str = ", ".join(f"`{d}`" for d in dims if d != "none")
+                    if dim_str:
+                        lines.append(f"**Dimensions:** {dim_str}")
+                        lines.append("")
+                # Statistics table
+                stats = realm.get('statistics', [])
+                if stats:
+                    lines.append("| Statistic | Description |")
+                    lines.append("|-----------|-------------|")
+                    for stat in stats:
+                        lines.append(f"| `{stat.get('name', '')}` | {stat.get('description', '')} |")
+                    lines.append("")
+
         fields = source.get('fields', [])
-        if not fields:
+        if not fields and not realms:
             lines.append("*No fields documented.*")
             lines.append("")
+            continue
+
+        if not fields:
             continue
 
         lines.append("| Field | Type | Access | MCP Name | Description |")
@@ -333,6 +369,15 @@ def generate_dbml(sources: list[dict]) -> str:
             f"api_endpoint: {source.get('api_endpoint') or 'null'}",
             f"priority: {source.get('priority', '')}",
         ]
+
+        realms = source.get('realms', [])
+        if realms:
+            realm_summaries = []
+            for r in realms:
+                stats_count = len(r.get('statistics', []))
+                dims_count = len([d for d in r.get('dimensions', []) if d != 'none'])
+                realm_summaries.append(f"{r['name']} ({stats_count} stats, {dims_count} dims)")
+            note_lines.append(f"realms: {', '.join(realm_summaries)}")
 
         lines.append(f"  {source.get('id', '')} [note: '''")
         for note_line in note_lines:
@@ -409,6 +454,39 @@ def generate_dbml(sources: list[dict]) -> str:
         lines.append("}")
         lines.append("")
 
+    # Generate tables for realm-based sources (e.g., XDMoD)
+    for source in sources:
+        realms = source.get('realms', [])
+        if not realms:
+            continue
+        source_id = source.get('id', 'unknown')
+        for realm in realms:
+            realm_id = realm.get('name', '').lower().replace(' ', '_')
+            table_name = f"{source_id}_{realm_id}"
+            lines.append(f"Table {table_name} {{")
+
+            # Dimensions
+            for dim in realm.get('dimensions', []):
+                if dim == 'none':
+                    continue
+                lines.append(f"  {dim} dimension [note: 'filter dimension']")
+
+            # Statistics
+            for stat in realm.get('statistics', []):
+                desc = stat.get('description', '').replace("'", "\\'")
+                lines.append(f"  {stat.get('name', '')} metric [note: '{desc}']")
+
+            lines.append("")
+            lines.append(f"  Note: '''")
+            lines.append(f"    source: {source_id}")
+            lines.append(f"    realm: {realm.get('name', '')}")
+            lines.append(f"    description: {realm.get('description', '')}")
+            lines.append(f"    access_level: {realm.get('access_level', '')}")
+            lines.append(f"    type: XDMoD realm (dimensions are query filters, statistics are computed metrics)")
+            lines.append(f"  '''")
+            lines.append("}")
+            lines.append("")
+
     lines.append("// =============================================================================")
     lines.append("// RELATIONSHIPS")
     lines.append("// =============================================================================")
@@ -424,6 +502,12 @@ def generate_dbml(sources: list[dict]) -> str:
             if field.get('primary_key'):
                 pk_map[table_id] = field.get('name')
                 break
+
+    # Register realm table IDs
+    for source in sources:
+        for realm in source.get('realms', []):
+            realm_id = realm.get('name', '').lower().replace(' ', '_')
+            table_ids.add(f"{source.get('id', 'unknown')}_{realm_id}")
 
     for source in sources:
         for rel in source.get('relationships', []):

@@ -256,4 +256,244 @@ Field-level documentation for all ACCESS data sources.
 - Show me wait times by resource for the past month
 - How many active users and PIs are there?
 
-*No fields documented.*
+### Realms
+
+XDMoD organizes data into **9 realms**, each with its own dimensions and statistics.
+
+#### Accounts
+
+*ACCESS user account tracking — accounts associated with allocations and job activity*
+
+**Access:** Public
+
+**Dimensions:** `resource`, `resource_type`
+
+| Statistic | Description |
+|-----------|-------------|
+| `unique_account_count` | Number of Accounts Created |
+| `unique_account_with_jobs_count` | Number of Accounts Created with Jobs |
+
+#### Allocations
+
+*Allocation and project tracking — active allocations, PIs, and resource usage in SUs/ACEs*
+
+**Access:** Public
+
+**Dimensions:** `allocation`, `allocation_type`, `board_type`, `fieldofscience`, `nsfdirectorate`, `pi`, `parentscience`, `resource`, `resource_type`
+
+| Statistic | Description |
+|-----------|-------------|
+| `active_allocation_count` | Number of Projects Active |
+| `active_pi_count` | Number of PIs Active |
+| `active_resallocation_count` | Number of Allocations Active |
+| `allocated_nu` | NUs Allocated |
+| `allocated_raw_su` | CPU Core Hours Allocated |
+| `allocated_su` | XD SUs Allocated |
+| `allocated_ace` | ACCESS Credit Equivalents Allocated (SU) |
+| `rate_of_usage` | Allocation Usage Rate (XD SU/Hour) |
+| `rate_of_usage_ace` | Allocation Usage Rate ACEs (SU/Hour) |
+| `used_su` | XD SUs Used |
+| `used_ace` | ACCESS Credit Equivalents Used (SU) |
+
+#### Cloud
+
+*Cloud and virtualized compute environment metrics*
+
+**Access:** Public
+
+**Dimensions:** `configuration`, `domain`, `instance_type`, `person`, `pi`, `project`, `provider`, `resource`, `resource_type`, `submission_venue`, `instance_state`, `institution`, `institution_country`, `institution_state`, `nsfdirectorate`, `parentscience`, `fieldofscience`, `pi_institution`, `pi_institution_country`, `pi_institution_state`, `vm_size`, `vm_size_cpu`, `vm_size_memory`
+
+| Statistic | Description |
+|-----------|-------------|
+| `cloud_num_sessions_ended` | Number of Sessions Ended |
+| `cloud_num_sessions_started` | Number of Sessions Started |
+| `cloud_num_sessions_running` | Number of Sessions Active |
+| `cloud_wall_time` | Wall Hours Total |
+| `cloud_core_time` | CPU Hours Total |
+| `cloud_avg_wallduration_hours` | Wall Hours Per Session |
+| `cloud_avg_cores_reserved` | Average Cores Reserved Weighted By Wall Hours |
+| `cloud_avg_memory_reserved` | Average Memory Reserved Weighted By Wall Hours (Bytes) |
+| `cloud_avg_rv_storage_reserved` | Average Root Volume Storage Reserved (Bytes) |
+| `cloud_core_utilization` | Core Hour Utilization (%) |
+| `gateway_session_count` | Number of Sessions Ended via Gateway |
+
+#### Gateways
+
+*Science gateway job metrics — jobs submitted through ACCESS gateways*
+
+**Access:** Public
+
+**Dimensions:** `allocation`, `fieldofscience`, `gateway`, `gateway_user`, `grant_type`, `jobsize`, `jobwaittime`, `jobwalltime`, `nsfdirectorate`, `nodecount`, `pi`, `pi_institution`, `pi_institution_country`, `pi_institution_state`, `parentscience`, `queue`, `resource`, `resource_type`, `provider`, `person`, `institution`, `institution_country`, `institution_state`
+
+| Statistic | Description |
+|-----------|-------------|
+| `job_count` | Number of Jobs Ended |
+| `running_job_count` | Number of Jobs Running |
+| `started_job_count` | Number of Jobs Started |
+| `submitted_job_count` | Number of Jobs Submitted |
+| `total_cpu_hours` | CPU Hours Total |
+| `total_node_hours` | Node Hours Total |
+| `total_wallduration_hours` | Wall Hours Total |
+| `total_waitduration_hours` | Wait Hours Total |
+| `avg_cpu_hours` | CPU Hours Per Job |
+| `avg_node_hours` | Node Hours Per Job |
+| `avg_wallduration_hours` | Wall Hours Per Job |
+| `avg_waitduration_hours` | Wait Hours Per Job |
+| `avg_processors` | Job Size Per Job (Core Count) |
+| `max_processors` | Job Size Max (Core Count) |
+| `min_processors` | Job Size Min (Core Count) |
+| `normalized_avg_processors` | Job Size Normalized (% of Total Cores) |
+| `total_su` | XD SUs Charged Total |
+| `avg_su` | XD SUs Charged Per Job |
+| `total_nu` | NUs Charged Total |
+| `avg_nu` | NUs Charged Per Job |
+| `total_ace` | ACCESS Credit Equivalents Charged Total (SU) |
+| `avg_ace` | ACCESS Credit Equivalents Charged Per Job (SU) |
+| `expansion_factor` | User Expansion Factor |
+| `utilization` | ACCESS CPU Utilization (%) |
+| `active_resource_count` | Number of Resources Active |
+| `active_institution_count` | Number of Institutions Active |
+| `active_gateway_count` | Number of Gateways Active |
+| `active_gwuser_count` | Number of Gateway Users Active |
+
+#### Jobs
+
+*Job accounting and resource usage metrics from job schedulers*
+
+**Access:** Public
+
+**Dimensions:** `allocation`, `fieldofscience`, `grant_type`, `jobsize`, `jobwaittime`, `jobwalltime`, `nsfdirectorate`, `nodecount`, `pi`, `pi_institution`, `pi_institution_country`, `pi_institution_state`, `parentscience`, `queue`, `resource`, `resource_type`, `provider`, `person`, `institution`, `institution_country`, `institution_state`, `username`, `qos`, `application`
+
+| Statistic | Description |
+|-----------|-------------|
+| `job_count` | Number of Jobs Ended |
+| `running_job_count` | Number of Jobs Running |
+| `started_job_count` | Number of Jobs Started |
+| `submitted_job_count` | Number of Jobs Submitted |
+| `total_cpu_hours` | CPU Hours Total |
+| `total_node_hours` | Node Hours Total |
+| `total_wallduration_hours` | Wall Hours Total |
+| `total_waitduration_hours` | Wait Hours Total |
+| `avg_cpu_hours` | CPU Hours Per Job |
+| `avg_node_hours` | Node Hours Per Job |
+| `avg_wallduration_hours` | Wall Hours Per Job |
+| `avg_waitduration_hours` | Wait Hours Per Job |
+| `avg_processors` | Job Size Per Job (Core Count) |
+| `max_processors` | Job Size Max (Core Count) |
+| `min_processors` | Job Size Min (Core Count) |
+| `normalized_avg_processors` | Job Size Normalized (% of Total Cores) |
+| `total_su` | XD SUs Charged Total |
+| `avg_su` | XD SUs Charged Per Job |
+| `total_nu` | NUs Charged Total |
+| `avg_nu` | NUs Charged Per Job |
+| `total_ace` | ACCESS Credit Equivalents Charged Total (SU) |
+| `avg_ace` | ACCESS Credit Equivalents Charged Per Job (SU) |
+| `expansion_factor` | User Expansion Factor |
+| `utilization` | ACCESS CPU Utilization (%) |
+| `gateway_job_count` | Number of Jobs via Gateway |
+| `active_person_count` | Number of Users Active |
+| `active_pi_count` | Number of PIs Active |
+| `active_resource_count` | Number of Resources Active |
+| `active_allocation_count` | Number of Allocations Active |
+| `active_institution_count` | Number of Institutions Active |
+
+#### Requests
+
+*Allocation request and proposal tracking*
+
+**Access:** Public
+
+**Dimensions:** `fieldofscience`, `nsfdirectorate`, `parentscience`
+
+| Statistic | Description |
+|-----------|-------------|
+| `request_count` | Number of Proposals |
+| `project_count` | Number of Projects |
+
+#### ResourceSpecifications
+
+*Resource hardware specifications — CPU/GPU counts, node hours, and capacity metrics*
+
+**Access:** Public
+
+**Dimensions:** `resource`, `resource_institution_country`, `resource_institution_state`, `resource_type`
+
+| Statistic | Description |
+|-----------|-------------|
+| `total_cpu_core_hours` | CPU Hours Total |
+| `allocated_cpu_core_hours` | CPU Hours Allocated |
+| `total_gpu_hours` | GPU Hours Total |
+| `allocated_gpu_hours` | GPU Hours Allocated |
+| `total_gpu_node_hours` | GPU Node Hours Total |
+| `allocated_gpu_node_hours` | GPU Node Hours Allocated |
+| `total_cpu_node_hours` | CPU Node Hours Total |
+| `allocated_cpu_node_hours` | CPU Node Hours Allocated |
+| `total_avg_number_of_cpu_cores` | Average Number of CPU Cores Total |
+| `allocated_avg_number_of_cpu_cores` | Average Number of CPU Cores Allocated |
+| `total_avg_number_of_gpus` | Average Number of GPUs Total |
+| `allocated_avg_number_of_gpus` | Average Number of GPUs Allocated |
+| `total_avg_number_of_cpu_nodes` | Average Number of CPU Nodes Total |
+| `allocated_avg_number_of_cpu_nodes` | Average Number of CPU Nodes Allocated |
+| `total_avg_number_of_gpu_nodes` | Average Number of GPU Nodes Total |
+| `allocated_avg_number_of_gpu_nodes` | Average Number of GPU Nodes Allocated |
+| `ace_total` | ACCESS Credit Equivalents Available Total (SU) |
+| `ace_allocated` | ACCESS Credit Equivalents Available Allocated (SU) |
+
+#### Storage
+
+*File system and storage usage metrics*
+
+**Access:** Public
+
+| Statistic | Description |
+|-----------|-------------|
+| `user_count` | User Count |
+| `avg_physical_usage` | Physical Usage (Bytes) |
+| `avg_logical_usage` | Logical Usage (Bytes) |
+| `avg_file_count` | File Count |
+| `avg_hard_threshold` | Quota Hard Threshold (Bytes) |
+| `avg_soft_threshold` | Quota Soft Threshold (Bytes) |
+
+#### SUPREMM
+
+*Detailed job performance analytics — CPU, GPU, memory, network, and I/O metrics from monitoring*
+
+**Access:** Public
+
+**Dimensions:** `resource`, `person`, `pi`, `institution`, `jobsize`, `queue`, `fieldofscience`, `nsfdirectorate`, `parentscience`, `application`, `cpi`, `cpu`, `cpucv`, `cpuuser`, `datasource`, `exit_status`, `gpu_count`, `granted_pe`, `ibrxbyterate`, `jobwalltime`, `max_mem`, `mem_used`, `nodecount`, `pi_institution`, `provider`, `resource_type`, `shared`, `username`, `institution_country`, `institution_state`
+
+| Statistic | Description |
+|-----------|-------------|
+| `job_count` | Number of Jobs Ended |
+| `short_job_count` | Number of Short Jobs Ended |
+| `running_job_count` | Number of Jobs Running |
+| `started_job_count` | Number of Jobs Started |
+| `submitted_job_count` | Number of Jobs Submitted |
+| `wall_time` | CPU Hours Total |
+| `wall_time_per_job` | Wall Hours Per Job |
+| `wait_time` | Wait Hours Total |
+| `wait_time_per_job` | Wait Hours Per Job |
+| `requested_wall_time` | Wall Hours Requested Total |
+| `requested_wall_time_per_job` | Wall Hours Requested Per Job |
+| `wall_time_accuracy` | Wall Time Accuracy (%) |
+| `cpu_time_user` | CPU Hours User Total |
+| `cpu_time_system` | CPU Hours System Total |
+| `cpu_time_idle` | CPU Hours Idle Total |
+| `avg_percent_cpu_user` | Avg CPU % User weighted by core-hour |
+| `avg_percent_cpu_system` | Avg CPU % System weighted by core-hour |
+| `avg_percent_cpu_idle` | Avg CPU % Idle weighted by core-hour |
+| `gpu_time` | GPU Hours Total |
+| `avg_percent_gpu_usage` | Avg GPU usage weighted by GPU hour (%) |
+| `avg_flops_per_core` | Avg FLOPS Per Core weighted by core-hour (ops/s) |
+| `avg_memory_per_core` | Avg Memory Per Core weighted by core-hour (bytes) |
+| `avg_total_memory_per_core` | Avg Total Memory Per Core weighted by core-hour (bytes) |
+| `avg_max_memory_per_core` | Avg Max Memory weighted by core-hour (%) |
+| `avg_mem_bw_per_core` | Avg Memory Bandwidth Per Core weighted by core-hour (bytes/s) |
+| `avg_ib_rx_bytes` | Avg InfiniBand rate Per Node weighted by node-hour (bytes/s) |
+| `avg_homogeneity` | Avg Homogeneity weighted by node-hour (%) |
+| `total_su` | XD SUs Charged Total |
+| `avg_su` | XD SUs Charged Per Job |
+| `total_ace` | ACCESS Credit Equivalents Charged Total (SU) |
+| `avg_ace` | ACCESS Credit Equivalents Charged Per Job (SU) |
+| `active_pi_count` | Number of PIs Active |
+| `active_app_count` | Number of Applications Active |
